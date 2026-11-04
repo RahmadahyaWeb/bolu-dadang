@@ -37,7 +37,7 @@ Semua foto disimpan lokal di `src/assets/`:
 - `public/og.jpg` — gambar Open Graph (1200×630).
 
 Cukup timpa file dengan nama yang sama; `npm run build` akan memproses ulang.
-Foto placeholder saat ini berasal dari Unsplash dan Wikimedia Commons; lihat `CREDITS.md`.
+Foto saat ini adalah ilustrasi AI (Gemini/Nano Banana) dan wajib diganti foto asli sebelum publikasi; lihat `CREDITS.md` dan `docs/image-prompts.md`.
 
 ## Deploy
 

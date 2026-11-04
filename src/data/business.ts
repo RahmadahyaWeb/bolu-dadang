@@ -67,7 +67,7 @@ export const business: Business = {
       description:
         "Bolu kelemben klasik dengan aroma mentega dan vanila. Lembut, manisnya pas.",
       image: originalImg,
-      alt: "Sepotong bolu kelemben original di atas piring putih",
+      alt: "Satu loyang bolu kelemben original di atas talenan kayu",
       badge: "Favorit",
     },
     {
@@ -77,7 +77,7 @@ export const business: Business = {
       description:
         "Aroma pandan yang khas dengan tekstur lembut. Pilihan yang segar untuk sore hari.",
       image: pandanImg,
-      alt: "Sepotong bolu pandan hijau di atas kertas roti",
+      alt: "Bolu kelemben pandan dengan crumb hijau pucat, dipotong di atas talenan",
     },
     {
       id: "coklat",
@@ -86,7 +86,7 @@ export const business: Business = {
       description:
         "Bolu lembut dengan rasa coklat pekat di setiap gigitan.",
       image: coklatImg,
-      alt: "Bolu gulung coklat dengan isian krim putih",
+      alt: "Bolu kelemben coklat dengan crumb coklat tua di atas talenan",
     },
     {
       id: "coklat-zebra",
@@ -95,7 +95,7 @@ export const business: Business = {
       description:
         "Motif zebra coklat yang cantik dengan rasa lembut dan tidak berlebihan.",
       image: zebraImg,
-      alt: "Bolu motif zebra coklat yang dipotong di atas piring",
+      alt: "Bolu kelemben zebra dengan pola coklat berlapis di atas talenan",
     },
   ],
   // TODO(owner): isi priceFrom setelah daftar harga tersedia.

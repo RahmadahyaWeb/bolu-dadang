@@ -1,25 +1,29 @@
-# Kredit foto placeholder
+# Kredit & status foto
 
-Foto di bawah adalah placeholder stok yang akan diganti dengan foto asli Bolu Dadang
-sebelum publikasi. Semua file berada di `src/assets/` dan `public/og.jpg`.
+Semua foto di `src/assets/` dan `public/og.jpg` saat ini adalah **ilustrasi AI** yang dibuat dengan Gemini / Nano Banana, bukan foto produk asli. Prompt tersimpan di `docs/image-prompts.md`.
 
-## Unsplash (lisensi Unsplash — gratis komersial, atribusi tidak wajib)
+## Status
 
-- `src/assets/hero.jpg` — https://unsplash.com/photos/1760136874870-701b323169ed
-- `src/assets/products/original.jpg` — https://unsplash.com/photos/1514435390218-898a0e01517a
-- `src/assets/products/coklat.jpg` — https://unsplash.com/photos/1772469425825-b1b5309760d4
-- `src/assets/products/zebra.jpg` — https://unsplash.com/photos/1771537841015-38ce5eb33a8c
-- `src/assets/gallery/02.jpg` — https://unsplash.com/photos/1675227977042-a572dac762be
-- `src/assets/gallery/03.jpg` — https://unsplash.com/photos/1531172079369-5f1a80aa8a99
-- `src/assets/gallery/04.jpg` — https://unsplash.com/photos/1772469425825-b1b5309760d4
-- `src/assets/gallery/05.jpg` — https://unsplash.com/photos/1771537841015-38ce5eb33a8c
-- `src/assets/about-texture.jpg` — https://unsplash.com/photos/1761498465986-5d395dc3774e
+| File | Sumber | Status |
+|---|---|---|
+| `src/assets/hero.jpg` | AI (Nano Banana) | placeholder |
+| `src/assets/products/original.jpg` | AI | placeholder |
+| `src/assets/products/pandan.jpg` | AI | placeholder |
+| `src/assets/products/coklat.jpg` | AI | placeholder |
+| `src/assets/products/zebra.jpg` | AI | placeholder |
+| `src/assets/gallery/01–06.jpg` | AI | placeholder |
+| `src/assets/about-texture.jpg` | AI (crop galeri 4) | placeholder |
+| `public/og.jpg` | AI (crop hero) | placeholder |
 
-## Wikimedia Commons (atribusi wajib)
+## Sebelum publikasi
 
-- `src/assets/products/pandan.jpg`, `src/assets/gallery/06.jpg` —
-  "A Pandan Cake.jpg" oleh Peachyeung316 —
-  https://commons.wikimedia.org/wiki/File:A_Pandan_Cake.jpg — CC BY-SA 4.0
-- `public/og.jpg` — dipotong dari `src/assets/hero.jpg` (Unsplash).
+1. Ganti dengan foto asli Bolu Dadang (minimal hero, 4 varian, dan 3 galeri).
+2. Timpa file dengan nama yang sama, lalu `npm run build`.
+3. Perbarui alt text di `src/data/business.ts`, `Hero.astro`, `About.astro`, dan `Gallery.astro` bila isi foto berubah.
+4. Hapus catatan "Foto ilustrasi AI" di footer setelah semua foto asli terpasang.
 
-Semua foto placeholder wajib diganti dengan foto asli Bolu Dadang sebelum publikasi.
+Gambar AI memiliki watermark SynthID tak terlihat dan **tidak boleh** dipakai sebagai bukti produk nyata di halaman yang sudah tayang.
+
+## Peta
+
+`public/map.jpg` dihasilkan dari OpenStreetMap (© OpenStreetMap contributors, ODbL) pada koordinat perkiraan Banjarmasin. Atribusi ditampilkan di bawah peta. Perbarui gambar bila alamat/koordinat final sudah pasti.

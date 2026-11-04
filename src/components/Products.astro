@@ -13,55 +13,59 @@ const items = business.products.map((p) => ({
 ---
 <section id="menu" class="py-16 md:py-24">
   <div class="mx-auto max-w-[1200px] px-5">
-    <div class="max-w-2xl">
-      <p class="text-sm font-semibold uppercase tracking-[0.18em] text-caramel">Varian rasa</p>
-      <h2 class="mt-3 font-display text-[clamp(2rem,5vw,3.25rem)] font-semibold leading-tight text-balance">
-        Empat rasa yang dipanggang rutin
-      </h2>
-      <p class="mt-4 text-lg leading-relaxed text-cocoa/80">
-        Pilih favorit Anda — setiap varian dipesan langsung lewat WhatsApp,
-        dengan harga dan ketersediaan dikonfirmasi saat chat.
-      </p>
-    </div>
+    <h2 class="max-w-2xl text-[clamp(2.1rem,5.5vw,3.5rem)] font-semibold leading-[1.08] text-balance">
+      Empat rasa yang dipanggang rutin
+    </h2>
+    <p class="mt-4 max-w-2xl text-lg leading-relaxed text-cokelat/85">
+      Pilih favorit Anda — setiap varian dipesan langsung lewat WhatsApp,
+      dengan harga dan ketersediaan dikonfirmasi saat chat.
+    </p>
 
-    <div class="mt-10 grid gap-6 md:grid-cols-2">
-      {items.map((product) => (
-        <article class="group flex flex-col overflow-hidden rounded-3xl border border-caramel/15 bg-butter/45 shadow-[0_24px_50px_-32px_rgba(46,27,15,0.55)]">
-          <div class="relative aspect-[4/3] overflow-hidden">
+    <div class="mt-12 space-y-12 md:space-y-16">
+      {items.map((product, i) => (
+        <article class="grid items-center gap-7 md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] md:gap-12">
+          <figure class:list={["relative", i % 2 === 1 && "md:order-2"]}>
             <Image
               src={product.image}
               alt={product.alt}
               widths={[420, 820]}
-              sizes="(min-width: 768px) 50vw, 100vw"
+              sizes="(min-width: 768px) 42vw, 100vw"
               loading="lazy"
-              class="h-full w-full object-cover transition-transform motion-safe:duration-500 motion-safe:group-hover:scale-[1.04]"
+              class:list={[
+                "aspect-[4/3] w-full border-[6px] border-susu object-cover shadow-[0_30px_60px_-38px_rgba(42,22,8,0.6)]",
+                i % 2 === 0 ? "rotate-[-0.8deg]" : "rotate-[0.8deg]",
+              ]}
             />
             {product.badge && (
-              <span class="absolute left-4 top-4 rounded-full bg-marigold px-3.5 py-1.5 text-xs font-semibold tracking-wide text-cocoa shadow-sm">
+              <span class="absolute -right-2 top-4 rotate-[-7deg] border-2 border-cokelat bg-mentega px-3 py-1 text-sm font-semibold text-cokelat shadow-sm">
                 {product.badge}
               </span>
             )}
-          </div>
+          </figure>
 
-          <div class="flex flex-1 flex-col p-6">
-            <p class="text-xs font-semibold uppercase tracking-[0.16em] text-caramel">
-              {product.flavor}
+          <div>
+            <div class="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+              <h3 class="text-[clamp(1.65rem,4vw,2.35rem)] font-semibold leading-tight">
+                {product.name}
+              </h3>
+              <span class="leader hidden sm:block" aria-hidden="true"></span>
+              <span class="whitespace-nowrap text-lg font-semibold text-pandan">Tanya harga</span>
+            </div>
+
+            <p class="mt-3 max-w-xl text-lg leading-relaxed text-cokelat/85">
+              {product.description}
             </p>
-            <h3 class="mt-1.5 font-display text-2xl font-semibold text-cocoa">{product.name}</h3>
-            <p class="mt-2.5 leading-relaxed text-cocoa/80">{product.description}</p>
 
             {product.link && (
-              <div class="mt-auto pt-5">
-                <a
-                  href={product.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="inline-flex min-h-11 items-center gap-2.5 rounded-full bg-pandan px-6 py-2.5 font-semibold text-cream transition-transform motion-safe:duration-300 motion-safe:hover:-translate-y-0.5"
-                >
-                  <WaIcon class="h-4 w-4" />
-                  <span>Pesan via WhatsApp</span>
-                </a>
-              </div>
+              <a
+                href={product.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn btn-pandan mt-6"
+              >
+                <WaIcon class="h-4 w-4" />
+                <span>Pesan via WhatsApp</span>
+              </a>
             )}
           </div>
         </article>

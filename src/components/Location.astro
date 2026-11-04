@@ -8,27 +8,23 @@ const fullAddress = [business.address.street, business.address.district]
   .filter(Boolean)
   .join(", ");
 
-const mapSrc =
-  "https://www.openstreetmap.org/export/embed.html?bbox=114.5858,-3.3244,114.5958,-3.3144&layer=mapnik&marker=-3.3194,114.5908";
-
 const waGeneral = business.phone
   ? waLink(business.phone, business.orderTemplate.replace("{flavor}", "yang tersedia"))
   : "";
 ---
 <section id="lokasi" class="py-16 md:py-24">
   <div class="mx-auto max-w-[1200px] px-5">
-    <div class="grid items-start gap-12 md:grid-cols-2">
+    <div class="grid items-start gap-12 md:grid-cols-2 md:gap-16">
       <div>
-        <p class="text-sm font-semibold uppercase tracking-[0.18em] text-caramel">Lokasi &amp; jam buka</p>
-        <h2 class="mt-3 font-display text-[clamp(2rem,5vw,3.25rem)] font-semibold leading-tight text-balance">
+        <h2 class="text-[clamp(2.1rem,5.5vw,3.5rem)] font-semibold leading-[1.08] text-balance">
           Mampir atau kirim ke rumah Anda
         </h2>
 
         {hasAddress ? (
-          <div class="mt-8 space-y-7">
+          <div class="mt-9 space-y-8">
             <div>
-              <h3 class="text-sm font-semibold uppercase tracking-[0.14em] text-caramel">Alamat</h3>
-              <address class="mt-2 text-lg not-italic leading-relaxed text-cocoa/85">
+              <h3 class="text-lg font-semibold text-cokelat">Alamat</h3>
+              <address class="mt-2 text-lg not-italic leading-relaxed text-cokelat/85">
                 {fullAddress}<br />
                 {business.address.city}, {business.address.province}
               </address>
@@ -36,54 +32,51 @@ const waGeneral = business.phone
 
             {business.hours.length > 0 && (
               <div>
-                <h3 class="text-sm font-semibold uppercase tracking-[0.14em] text-caramel">Jam buka</h3>
-                <ul class="mt-2 space-y-1 text-lg text-cocoa/85">
+                <h3 class="text-lg font-semibold text-cokelat">Jam buka</h3>
+                <ul class="mt-2 space-y-1 text-lg text-cokelat/85">
                   {business.hours.map((h) => (
-                    <li class="flex flex-wrap items-center gap-2">
-                      <span class="font-medium text-cocoa">{h.days}</span>
-                      <span aria-hidden="true" class="text-caramel">·</span>
-                      <span>{h.time}</span>
-                    </li>
+                    <li>{h.days}, pukul {h.time}</li>
                   ))}
                 </ul>
               </div>
             )}
 
-            <div class="rounded-2xl bg-butter/60 p-5 text-cocoa/85">
-              <p class="flex items-start gap-2.5">
-                <svg class="mt-1 h-4 w-4 shrink-0 text-pandan" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                  <path d="M7.6 13.6 4 10l-1.4 1.4 5 5 10-10-1.4-1.4z"></path>
-                </svg>
-                <span>Ambil langsung di alamat di atas, atau kirim via Gojek, Grab, dan ekspedisi — opsi dan biaya dikonfirmasi lewat WhatsApp.</span>
+            <div class="border-l-4 border-mentega bg-susu px-5 py-4 text-cokelat/90">
+              <p>
+                Ambil langsung di alamat di atas, atau kirim via Gojek, Grab, dan ekspedisi —
+                opsi dan biaya dikonfirmasi lewat WhatsApp.
               </p>
             </div>
 
-            <a
-              href={business.address.mapsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex min-h-11 items-center gap-2 rounded-full border-2 border-pandan px-6 py-2.5 font-semibold text-pandan transition-colors hover:bg-pandan hover:text-cream"
-            >
-              <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path
-                  fill-rule="evenodd"
-                  d="M10 2a6 6 0 0 0-6 6c0 4.2 5.2 9.5 5.4 9.7a.75.75 0 0 0 1.1 0C10.8 17.5 16 12.2 16 8a6 6 0 0 0-6-6Zm0 8.2A2.2 2.2 0 1 1 10 5.8a2.2 2.2 0 0 1 0 4.4Z"
-                  clip-rule="evenodd"
-                ></path>
-              </svg>
-              <span>Buka di OpenStreetMap</span>
-            </a>
+            <div class="flex flex-wrap gap-3">
+              <a
+                href={business.address.mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn btn-ghost"
+              >
+                <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 2a6 6 0 0 0-6 6c0 4.2 5.2 9.5 5.4 9.7a.75.75 0 0 0 1.1 0C10.8 17.5 16 12.2 16 8a6 6 0 0 0-6-6Zm0 8.2A2.2 2.2 0 1 1 10 5.8a2.2 2.2 0 0 1 0 4.4Z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span>Buka di OpenStreetMap</span>
+              </a>
+              {waGeneral && (
+                <a href={waGeneral} target="_blank" rel="noopener noreferrer" class="btn btn-pandan">
+                  <WaIcon class="h-4 w-4" />
+                  <span>Pesan via WhatsApp</span>
+                </a>
+              )}
+            </div>
           </div>
         ) : (
           <div class="mt-8 space-y-4">
-            <p class="text-lg text-cocoa/85">Lokasi &amp; jam menyusul.</p>
+            <p class="text-lg text-cokelat/85">Lokasi &amp; jam menyusul.</p>
             {waGeneral && (
-              <a
-                href={waGeneral}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex min-h-11 items-center gap-2.5 rounded-full bg-marigold px-6 py-2.5 font-semibold text-cocoa"
-              >
+              <a href={waGeneral} target="_blank" rel="noopener noreferrer" class="btn btn-mentega">
                 <WaIcon class="h-4 w-4" />
                 <span>Tanya lokasi via WhatsApp</span>
               </a>
@@ -93,16 +86,23 @@ const waGeneral = business.phone
       </div>
 
       {hasAddress && (
-        <div class="overflow-hidden rounded-3xl border border-caramel/15 shadow-[0_30px_60px_-40px_rgba(46,27,15,0.55)]">
-          <iframe
-            src={mapSrc}
-            title={`Peta lokasi ${business.name}`}
+        <div class="border-4 border-susu shadow-[0_30px_60px_-40px_rgba(42,22,8,0.55)]">
+          <img
+            src="/map.jpg"
+            alt={`Peta lokasi ${business.name} di Banjarmasin`}
+            width="840"
+            height="560"
             loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"
-            width="600"
-            height="450"
-            class="h-full min-h-[320px] w-full border-0"
-          ></iframe>
+            class="block h-auto w-full"
+          />
+          <p class="bg-susu px-3 py-2 text-xs text-cokelat/70">
+            Peta © <a
+              href="https://www.openstreetmap.org/copyright"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="underline decoration-cokelat/30 underline-offset-2 hover:text-cokelat"
+            >OpenStreetMap contributors</a>
+          </p>
         </div>
       )}
     </div>

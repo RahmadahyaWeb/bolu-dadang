@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  --color-cream: #fff7e9;
-  --color-cocoa: #2e1b0f;
-  --color-butter: #f6e3bc;
-  --color-pandan: #3f5d3a;
-  --color-marigold: #e8a33d;
-  --color-caramel: #a4602f;
+  --color-kertas: #fbecc8;
+  --color-cokelat: #2a1608;
+  --color-mentega: #f2b93b;
+  --color-pandan: #2f5d3b;
+  --color-karamel: #8a4b1c;
+  --color-susu: #fff6e2;
 
   --font-display: "Fraunces Variable", ui-serif, Georgia, serif;
   --font-body: "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, sans-serif;
@@ -19,13 +19,24 @@
   }
 
   body {
-    background-color: var(--color-cream);
-    color: var(--color-cocoa);
+    background-color: var(--color-kertas);
+    /* static noise texture (not a fixed layer: avoids mobile scroll shimmer) */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+    color: var(--color-cokelat);
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
   }
 
-  /* currentColor keeps the ring visible on both cream and cocoa surfaces */
+  /* Fraunces full axes: soft + wonky letterforms, like risen batter */
+  h1,
+  h2,
+  h3,
+  .display {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 80, "WONK" 1;
+  }
+
+  /* currentColor keeps the ring visible on golden, dark, and green surfaces */
   :focus-visible {
     outline: 3px solid currentColor;
     outline-offset: 2px;
@@ -33,7 +44,7 @@
 
   /* keep anchored sections clear of the sticky header */
   section[id] {
-    scroll-margin-top: 5rem;
+    scroll-margin-top: 5.5rem;
   }
 
   summary {
@@ -46,27 +57,95 @@
   }
 }
 
-/* subtle grain over the whole page */
-.grain-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-  pointer-events: none;
-  opacity: 0.055;
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http:%2F%2Fwww.w3.org%2F2000%2Fsvg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+/* the one bold device: 45° zebra stripes from the Coklat Zebra kelemben */
+.stripe {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--color-cokelat) 0 16px,
+    var(--color-mentega) 16px 24px,
+    var(--color-cokelat) 24px 30px,
+    var(--color-mentega) 30px 44px
+  );
 }
 
-/* fixed blend layer can cause scroll shimmer on mobile */
-@media (max-width: 767px) {
-  .grain-overlay {
-    display: none;
+.stripe-divider {
+  height: 12px;
+  width: 100%;
+}
+
+/* dotted leader on the menu board rows */
+.leader {
+  flex: 1 1 2rem;
+  min-width: 2rem;
+  align-self: baseline;
+  border-bottom: 3px dotted color-mix(in srgb, var(--color-karamel) 55%, transparent);
+}
+
+@layer components {
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    min-height: 3rem;
+    padding: 0.75rem 1.75rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    line-height: 1.15;
+    text-align: center;
+    transition:
+      transform 0.25s ease,
+      background-color 0.25s ease,
+      color 0.25s ease,
+      border-color 0.25s ease;
   }
-}
 
-/* header shadow (static, no scroll-driven toggle to avoid mobile jitter) */
-[data-header] {
-  box-shadow: 0 1px 0 rgba(46, 27, 15, 0.08);
+  .btn:focus-visible {
+    outline: 3px solid currentColor;
+    outline-offset: 3px;
+  }
+
+  .btn-mentega {
+    background-color: var(--color-mentega);
+    color: var(--color-cokelat);
+    box-shadow: 0 14px 28px -16px rgba(42, 22, 8, 0.55);
+  }
+
+  .btn-mentega:hover {
+    background-color: #e0a52c;
+    transform: translateY(-2px);
+  }
+
+  .btn-pandan {
+    background-color: var(--color-pandan);
+    color: var(--color-susu);
+    box-shadow: 0 14px 28px -16px rgba(42, 22, 8, 0.45);
+  }
+
+  .btn-pandan:hover {
+    background-color: #26492e;
+    transform: translateY(-2px);
+  }
+
+  .btn-ghost {
+    border: 2px solid color-mix(in srgb, var(--color-cokelat) 30%, transparent);
+    color: var(--color-cokelat);
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--color-pandan);
+    color: var(--color-pandan);
+  }
+
+  .btn-ghost-light {
+    border: 2px solid color-mix(in srgb, var(--color-susu) 45%, transparent);
+    color: var(--color-susu);
+  }
+
+  .btn-ghost-light:hover {
+    border-color: var(--color-mentega);
+    color: var(--color-mentega);
+  }
 }
 
 /* floating WA: hidden until JS reveals it past the hero.
@@ -86,6 +165,7 @@
   pointer-events: auto;
 }
 
+/* one orchestrated moment: the hero load sequence */
 @media (prefers-reduced-motion: no-preference) {
   .rise {
     animation: rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -95,7 +175,6 @@
   .rise-2 { animation-delay: 0.15s; }
   .rise-3 { animation-delay: 0.25s; }
   .rise-4 { animation-delay: 0.35s; }
-  .rise-5 { animation-delay: 0.45s; }
 
   @keyframes rise {
     from {
