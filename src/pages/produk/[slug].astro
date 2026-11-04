@@ -1,0 +1,195 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import ProductGallery from "../../components/ProductGallery.astro";
+import ProductCard from "../../components/ProductCard.astro";
+import QuantityStepper from "../../components/QuantityStepper.astro";
+import Accordion from "../../components/Accordion.astro";
+import WaIcon from "../../components/WaIcon.astro";
+import { business } from "../../data/business";
+import { products } from "../../data/catalog";
+import { waLink } from "../../lib/wa";
+
+export function getStaticPaths() {
+  return products.map((product) => ({
+    params: { slug: product.slug },
+    props: { product },
+  }));
+}
+
+const { product } = Astro.props;
+
+const title = `${product.name} — ${business.name}`;
+const description = product.description;
+
+const waTanya = business.phone
+  ? waLink(business.phone, business.orderTemplate.replace("{flavor}", product.flavor))
+  : "";
+
+// 1 foto utama varian + 2 thumbnail dari galeri umum; alt mengikuti isi foto.
+const galleryAlts = [
+  product.alt,
+  "Adonan bolu kelemben dengan telur, tepung, dan whisk",
+  "Bolu kelemben dalam kotak kertas kraft",
+];
+
+const hasInfoData = Boolean(
+  product.ingredients?.length ||
+    product.allergens?.length ||
+    product.storage ||
+    product.packaging,
+);
+
+const crossSell = products.filter((p) => p.slug !== product.slug).slice(0, 3);
+
+const site = Astro.site;
+const productLd = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  name: product.name,
+  description: product.longDescription,
+  sku: product.id,
+  category: product.categoryLabel,
+  image: product.images.map((img) => new URL(img.src, site).href),
+  brand: { "@type": "Brand", name: business.name },
+};
+
+const breadcrumbLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Beranda", item: new URL("/", site).href },
+    { "@type": "ListItem", position: 2, name: "Katalog", item: new URL("/katalog", site).href },
+    {
+      "@type": "ListItem",
+      position: 3,
+      name: product.name,
+      item: new URL(`/produk/${product.slug}`, site).href,
+    },
+  ],
+};
+---
+<Layout title={title} description={description} jsonLd={[productLd, breadcrumbLd]}>
+  <div class="mx-auto max-w-[1200px] px-5 pt-8">
+    <Breadcrumbs
+      items={[
+        { label: "Beranda", href: "/" },
+        { label: "Katalog", href: "/katalog" },
+        { label: product.name },
+      ]}
+    />
+  </div>
+
+  <section class="pb-16 pt-6 md:pb-24" data-pdp>
+    <div class="mx-auto grid max-w-[1200px] gap-10 px-5 md:grid-cols-2 md:gap-14">
+      <ProductGallery images={product.images} alts={galleryAlts} name={product.name} />
+
+      <div>
+        <p class="text-sm text-karamel">
+          <span>{product.categoryLabel}</span>
+        </p>
+        <h1 class="mt-2 text-[clamp(2.2rem,5.5vw,3.4rem)] font-semibold leading-[1.08] text-balance">
+          {product.name}
+        </h1>
+
+        <p class="mt-4 text-xl font-semibold">
+          {product.priceFrom === undefined ? (
+            waTanya ? (
+              <a href={waTanya} target="_blank" rel="noopener noreferrer" class="underline decoration-mentega decoration-2 underline-offset-4 hover:text-pandan">
+                Tanya harga
+              </a>
+            ) : (
+              <span>Tanya harga</span>
+            )
+          ) : (
+            <span>Rp {product.priceFrom.toLocaleString("id-ID")}</span>
+          )}
+        </p>
+
+        {(product.weight || product.servings) && (
+          <p class="mt-2 text-karamel">
+            {[product.weight, product.servings].filter(Boolean).join(", ")}
+          </p>
+        )}
+
+        <p class="mt-6 text-lg leading-relaxed text-cokelat/85">{product.longDescription}</p>
+
+        <div class="mt-8 flex flex-wrap items-center gap-4">
+          <QuantityStepper id={`qty-${product.id}`} label={`Jumlah ${product.name}`} />
+          <button type="button" data-add-to-cart data-product-id={product.id} class="btn btn-mentega">
+            Tambah ke keranjang
+          </button>
+        </div>
+
+        {waTanya && (
+          <a
+            href={waTanya}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-4 inline-flex min-h-11 items-center gap-2 font-medium text-pandan underline decoration-mentega decoration-2 underline-offset-4"
+          >
+            <WaIcon class="h-4 w-4" />
+            <span>Pesan langsung via WhatsApp</span>
+          </a>
+        )}
+
+        <div class="mt-10 border-t border-cokelat/12">
+          {hasInfoData ? (
+            <>
+              {product.ingredients?.length ? (
+                <Accordion summary="Bahan">
+                  <ul class="list-disc space-y-1 pl-5">
+                    {product.ingredients.map((item) => <li>{item}</li>)}
+                  </ul>
+                </Accordion>
+              ) : null}
+              {product.allergens?.length ? (
+                <Accordion summary="Alergen">
+                  <ul class="list-disc space-y-1 pl-5">
+                    {product.allergens.map((item) => <li>{item}</li>)}
+                  </ul>
+                </Accordion>
+              ) : null}
+              {product.storage ? (
+                <Accordion summary="Penyimpanan"><p>{product.storage}</p></Accordion>
+              ) : null}
+              {product.packaging ? (
+                <Accordion summary="Kemasan"><p>{product.packaging}</p></Accordion>
+              ) : null}
+            </>
+          ) : (
+            <Accordion summary="Bahan & alergen">
+              <p>Daftar bahan dan alergen belum tersedia di situs ini.</p>
+              {waTanya ? (
+                <a
+                  href={waTanya}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="mt-3 inline-flex min-h-11 items-center font-medium text-pandan underline decoration-mentega decoration-2 underline-offset-4"
+                >
+                  Tanya bahan via WhatsApp
+                </a>
+              ) : (
+                <p class="mt-3 text-karamel">Nomor WhatsApp belum tersedia.</p>
+              )}
+            </Accordion>
+          )}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cross-sell -->
+  <section class="bg-susu py-16 md:py-24">
+    <div class="mx-auto max-w-[1200px] px-5">
+      <h2 class="text-[clamp(1.9rem,4.5vw,2.8rem)] font-semibold leading-tight">
+        Mungkin Anda suka
+      </h2>
+      <div class="mt-10 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
+        {crossSell.map((other) => (
+          <ProductCard product={other} headingLevel="h3" />
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>

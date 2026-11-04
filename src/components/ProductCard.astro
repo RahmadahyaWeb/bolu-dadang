@@ -1,0 +1,55 @@
+---
+import { Image } from "astro:assets";
+import type { Product } from "../data/catalog";
+import { business } from "../data/business";
+import { waLink } from "../lib/wa";
+
+interface Props {
+  product: Product;
+  headingLevel?: "h2" | "h3";
+}
+
+const { product, headingLevel: Heading = "h2" } = Astro.props;
+
+const waTanya = business.phone
+  ? waLink(
+      business.phone,
+      business.orderTemplate.replace("{flavor}", product.flavor),
+    )
+  : "";
+---
+<article class="group flex flex-col" data-kategori={product.category} data-nama={product.name}>
+  <a href={`/produk/${product.slug}`} class="block overflow-hidden rounded-md border border-cokelat/12">
+    <Image
+      src={product.images[0]}
+      alt={product.alt}
+      widths={[360, 640]}
+      sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 380px"
+      loading="lazy"
+      class="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+    />
+  </a>
+
+  <div class="mt-4 flex items-start justify-between gap-3">
+    <Heading class="text-xl font-semibold leading-snug">
+      <a href={`/produk/${product.slug}`} class="transition-colors hover:text-pandan">{product.name}</a>
+    </Heading>
+    {product.badge && <span class="badge shrink-0">{product.badge}</span>}
+  </div>
+
+  <p class="mt-2 text-sm leading-relaxed text-cokelat/80">{product.description}</p>
+
+  <p class="mt-3 text-base font-semibold">
+    {product.priceFrom === undefined ? (
+      waTanya ? (
+        <a href={waTanya} target="_blank" rel="noopener noreferrer" class="underline decoration-mentega decoration-2 underline-offset-4 hover:text-pandan">
+          Tanya harga
+        </a>
+      ) : (
+        <span>Tanya harga</span>
+      )
+    ) : (
+      <span>Rp {product.priceFrom.toLocaleString("id-ID")}</span>
+    )}
+  </p>
+</article>

@@ -1,0 +1,50 @@
+---
+import { Image, getImage } from "astro:assets";
+
+interface Props {
+  images: ImageMetadata[];
+  /** Alt untuk tiap foto, berurutan sesuai images. */
+  alts: string[];
+  name: string;
+}
+
+const { images, alts, name } = Astro.props;
+
+// URL ukuran penuh untuk swap utama saat thumbnail diklik.
+const fulls = await Promise.all(
+  images.map((img) => getImage({ src: img, width: 1024, format: "webp" })),
+);
+---
+<div data-gallery>
+  <Image
+    src={images[0]}
+    alt={alts[0]}
+    widths={[640, 1024]}
+    sizes="(max-width: 900px) 92vw, 560px"
+    data-gallery-main
+    class="aspect-[4/3] w-full rounded-md border border-cokelat/12 object-cover"
+  />
+
+  <div class="mt-3 flex gap-3">
+    {images.map((img, i) => (
+      <button
+        type="button"
+        data-gallery-thumb
+        data-full={fulls[i].src}
+        data-alt={alts[i]}
+        aria-pressed={i === 0 ? "true" : "false"}
+        aria-label={`Tampilkan foto ${i + 1} dari ${name}`}
+        class="h-20 w-20 overflow-hidden rounded-md border border-cokelat/12 transition-colors aria-pressed:border-pandan"
+      >
+        <Image
+          src={img}
+          alt=""
+          width={160}
+          height={160}
+          loading="lazy"
+          class="h-full w-full object-cover"
+        />
+      </button>
+    ))}
+  </div>
+</div>

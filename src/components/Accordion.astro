@@ -1,0 +1,23 @@
+---
+interface Props {
+  summary: string;
+  open?: boolean;
+}
+
+const { summary, open = false } = Astro.props;
+---
+<details class="group border-b border-cokelat/12" open={open}>
+  <summary class="flex min-h-11 items-center justify-between gap-5 py-4 text-left text-lg font-semibold">
+    {summary}
+    <span
+      class="relative grid h-9 w-9 shrink-0 place-items-center rounded-full bg-mentega transition-transform motion-safe:duration-300 group-open:rotate-45"
+      aria-hidden="true"
+    >
+      <span class="absolute left-1/2 top-1/2 h-[2.5px] w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cokelat"></span>
+      <span class="absolute left-1/2 top-1/2 h-3.5 w-[2.5px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cokelat"></span>
+    </span>
+  </summary>
+  <div class="pb-6 pr-12 leading-relaxed text-cokelat/85">
+    <slot />
+  </div>
+</details>

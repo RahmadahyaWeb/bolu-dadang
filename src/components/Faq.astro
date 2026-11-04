@@ -1,28 +1,20 @@
 ---
 import { business } from "../data/business";
----
-<section id="faq" class="bg-susu py-16 md:py-24">
-  <div class="mx-auto max-w-[820px] px-5">
-    <h2 class="text-[clamp(2.1rem,5.5vw,3.5rem)] font-semibold leading-[1.08] text-balance">
-      Pertanyaan yang sering ditanya
-    </h2>
+import Accordion from "./Accordion.astro";
 
-    <div class="mt-10 divide-y divide-cokelat/15">
-      {business.faqs.map((faq) => (
-        <details class="group">
-          <summary class="flex min-h-12 items-center justify-between gap-5 py-5 text-left">
-            <h3 class="text-lg font-semibold text-cokelat md:text-xl">{faq.question}</h3>
-            <span
-              class="relative grid h-9 w-9 shrink-0 place-items-center rounded-full bg-mentega transition-transform motion-safe:duration-300 group-open:rotate-45"
-              aria-hidden="true"
-            >
-              <span class="absolute left-1/2 top-1/2 h-[2.5px] w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cokelat"></span>
-              <span class="absolute left-1/2 top-1/2 h-3.5 w-[2.5px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cokelat"></span>
-            </span>
-          </summary>
-          <p class="pb-6 pr-12 leading-relaxed text-cokelat/85">{faq.answer}</p>
-        </details>
-      ))}
-    </div>
+interface Props {
+  heading?: string;
+}
+
+const { heading = "Pertanyaan yang sering ditanya" } = Astro.props;
+---
+<div>
+  <h2 class="text-[clamp(1.9rem,4.5vw,2.8rem)] font-semibold leading-tight">{heading}</h2>
+  <div class="mt-8 border-t border-cokelat/12">
+    {business.faqs.map((faq) => (
+      <Accordion summary={faq.question}>
+        <p>{faq.answer}</p>
+      </Accordion>
+    ))}
   </div>
-</section>
+</div>

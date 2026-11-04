@@ -1,19 +1,3 @@
-import type { ImageMetadata } from "astro";
-import originalImg from "../assets/products/original.jpg";
-import pandanImg from "../assets/products/pandan.jpg";
-import coklatImg from "../assets/products/coklat.jpg";
-import zebraImg from "../assets/products/zebra.jpg";
-
-export interface Product {
-  id: string;
-  name: string;
-  flavor: string;
-  description: string;
-  image: ImageMetadata;
-  alt: string;
-  badge?: string;
-}
-
 export interface Business {
   name: string;
   shortName: string;
@@ -31,8 +15,6 @@ export interface Business {
     mapsUrl: string;
   };
   hours: { days: string; time: string }[];
-  products: Product[];
-  sizes: { label: string; note?: string; priceFrom?: number }[];
   testimonialsAreExamples: boolean;
   testimonials: { quote: string; author: string; source?: string }[];
   faqs: { question: string; answer: string }[];
@@ -59,50 +41,6 @@ export const business: Business = {
       "https://www.openstreetmap.org/?mlat=-3.3194&mlon=114.5908#map=16/-3.3194/114.5908",
   },
   hours: [{ days: "Setiap hari", time: "10.00–17.00 WITA" }],
-  products: [
-    {
-      id: "original",
-      name: "Kelemben Original",
-      flavor: "Original",
-      description:
-        "Bolu kelemben klasik dengan aroma mentega dan vanila. Lembut, manisnya pas.",
-      image: originalImg,
-      alt: "Satu loyang bolu kelemben original di atas talenan kayu",
-      badge: "Favorit",
-    },
-    {
-      id: "pandan",
-      name: "Kelemben Pandan",
-      flavor: "Pandan",
-      description:
-        "Aroma pandan yang khas dengan tekstur lembut. Pilihan yang segar untuk sore hari.",
-      image: pandanImg,
-      alt: "Bolu kelemben pandan dengan crumb hijau pucat, dipotong di atas talenan",
-    },
-    {
-      id: "coklat",
-      name: "Kelemben Coklat",
-      flavor: "Coklat",
-      description:
-        "Bolu lembut dengan rasa coklat pekat di setiap gigitan.",
-      image: coklatImg,
-      alt: "Bolu kelemben coklat dengan crumb coklat tua di atas talenan",
-    },
-    {
-      id: "coklat-zebra",
-      name: "Kelemben Coklat Zebra",
-      flavor: "Coklat Zebra",
-      description:
-        "Motif zebra coklat yang cantik dengan rasa lembut dan tidak berlebihan.",
-      image: zebraImg,
-      alt: "Bolu kelemben zebra dengan pola coklat berlapis di atas talenan",
-    },
-  ],
-  // TODO(owner): isi priceFrom setelah daftar harga tersedia.
-  sizes: [
-    { label: "Kecil", note: "Cocok untuk 2–4 orang" },
-    { label: "Besar", note: "Cocok untuk keluarga" },
-  ],
   testimonialsAreExamples: true,
   testimonials: [
     {

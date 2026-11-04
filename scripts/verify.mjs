@@ -72,6 +72,7 @@ for (const [route, html] of pages) {
       const candidates = [
         join(dist, clean.slice(1), "index.html"),
         join(dist, clean.slice(1) + ".html"),
+        join(dist, clean.slice(1)),
       ];
       check(`${name}: link internal valid ${href}`, candidates.some((c) => existsSync(c)) || clean === "");
     }

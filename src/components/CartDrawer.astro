@@ -1,0 +1,42 @@
+---
+// Panel keranjang global: bottom sheet < 768px, panel kanan di >= 768px.
+// Isi item dirender oleh src/scripts/site.ts dari localStorage.
+---
+<div data-cart-drawer hidden class="fixed inset-0 z-[60]">
+  <div data-cart-backdrop class="absolute inset-0 bg-cokelat/50"></div>
+  <div
+    role="dialog"
+    aria-modal="true"
+    aria-label="Keranjang belanja"
+    class="cart-panel absolute inset-x-0 bottom-0 flex max-h-[85vh] flex-col rounded-t-2xl bg-kertas md:inset-y-0 md:left-auto md:right-0 md:max-h-none md:w-[400px] md:rounded-l-2xl md:rounded-tr-none"
+  >
+    <div class="flex items-center justify-between border-b border-cokelat/12 px-5 py-3">
+      <h2 class="display text-2xl font-semibold">Keranjang</h2>
+      <button
+        type="button"
+        data-cart-close
+        aria-label="Tutup keranjang"
+        class="inline-flex h-11 w-11 items-center justify-center rounded-full transition-colors hover:bg-cokelat/8"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-6 w-6" aria-hidden="true" focusable="false">
+          <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto px-5 py-4" data-cart-drawer-items>
+      <div class="py-10 text-center">
+        <p class="text-lg font-medium">Keranjang Anda masih kosong.</p>
+        <a href="/katalog" class="btn btn-mentega mt-5">Lihat katalog</a>
+      </div>
+    </div>
+
+    <div data-cart-drawer-foot hidden class="border-t border-cokelat/12 px-5 py-4">
+      <p class="text-sm text-karamel" data-cart-drawer-total>Total dihitung via WhatsApp</p>
+      <div class="mt-3 flex gap-3">
+        <a href="/keranjang" class="btn btn-ghost min-h-11 flex-1 px-3">Lihat keranjang</a>
+        <a href="/checkout" class="btn btn-pandan min-h-11 flex-1 px-3">Checkout</a>
+      </div>
+    </div>
+  </div>
+</div>

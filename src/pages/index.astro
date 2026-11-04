@@ -1,25 +1,210 @@
 ---
+import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
-import Hero from "../components/Hero.astro";
-import About from "../components/About.astro";
-import Products from "../components/Products.astro";
-import Sizes from "../components/Sizes.astro";
-import HowToOrder from "../components/HowToOrder.astro";
-import Gallery from "../components/Gallery.astro";
-import Testimonials from "../components/Testimonials.astro";
-import Location from "../components/Location.astro";
-import Faq from "../components/Faq.astro";
+import FilterPills from "../components/FilterPills.astro";
+import ProductCard from "../components/ProductCard.astro";
+import TestimonialCarousel from "../components/TestimonialCarousel.astro";
+import WaIcon from "../components/WaIcon.astro";
+import { business } from "../data/business";
+import { products } from "../data/catalog";
+import { waLink } from "../lib/wa";
+import heroImg from "../assets/hero.jpg";
+import aboutImg from "../assets/about-texture.jpg";
+
+const waGeneral = business.phone
+  ? waLink(business.phone, business.orderTemplate.replace("{flavor}", "yang tersedia"))
+  : "";
+
+const localBusinessLd = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  name: business.name,
+  description: business.description,
+  image: new URL("/og.jpg", Astro.site).href,
+  url: new URL("/", Astro.site).href,
+  ...(business.phone ? { telephone: `+${business.phone}` } : {}),
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: [business.address.street, business.address.district]
+      .filter(Boolean)
+      .join(", "),
+    addressLocality: business.address.city,
+    addressRegion: business.address.province,
+    ...(business.address.postalCode ? { postalCode: business.address.postalCode } : {}),
+    addressCountry: "ID",
+  },
+  openingHours: business.hours.map((h) => `${h.days} ${h.time}`),
+};
+
+const valueProps = [
+  {
+    title: "Dipanggang harian",
+    body: "Setiap loyang dipanggang harian, jadi Anda kebagian kelemben yang masih fresh dari oven.",
+  },
+  {
+    title: "Manisnya pas",
+    body: "Rasa manisnya tidak berlebihan — enak untuk teman teh atau kopi sore.",
+  },
+  {
+    title: "Untuk keluarga dan acara",
+    body: "Cocok untuk camilan keluarga dan pesanan acara. Pesan jumlah banyak lewat WhatsApp.",
+  },
+];
 ---
-<Layout>
-  <Hero />
+<Layout jsonLd={[localBusinessLd]}>
+  <!-- Hero -->
+  <section data-hero class="relative overflow-hidden">
+    <div class="mx-auto grid max-w-[1200px] items-center gap-10 px-5 py-14 md:grid-cols-[1.05fr_0.95fr] md:py-24">
+      <div>
+        <h1 class="rise rise-1 display text-[clamp(2.7rem,7vw,5.2rem)] font-semibold leading-[1] text-balance">
+          {business.tagline}.
+        </h1>
+        <p class="rise rise-2 mt-6 max-w-md text-lg leading-relaxed text-cokelat/85">
+          {business.description}
+        </p>
+        <div class="rise rise-3 mt-8 flex flex-wrap gap-3">
+          <a href="/katalog" class="btn btn-mentega">Lihat katalog</a>
+          {waGeneral && (
+            <a href={waGeneral} target="_blank" rel="noopener noreferrer" class="btn btn-ghost">
+              <WaIcon class="h-4 w-4" />
+              <span>Pesan via WhatsApp</span>
+            </a>
+          )}
+        </div>
+        <p class="rise rise-4 mt-7 max-w-md text-sm leading-relaxed text-karamel">
+          Pesan lewat WhatsApp, lalu ambil di tempat atau minta kirim. Harga dan ketersediaan
+          dikonfirmasi saat pesanan.
+        </p>
+      </div>
+
+      <div class="relative pb-12">
+        <div class="stripe absolute inset-x-6 bottom-0 h-32 rounded-md" aria-hidden="true"></div>
+        <Image
+          src={heroImg}
+          alt="Dua loyang bolu kelemben di atas tampah bambu beralas daun pisang"
+          widths={[640, 1024]}
+          sizes="(max-width: 900px) 92vw, 540px"
+          class="relative z-10 aspect-[4/3] w-full rounded-md border border-cokelat/12 object-cover"
+        />
+      </div>
+    </div>
+  </section>
+
   <div class="stripe stripe-divider" aria-hidden="true"></div>
-  <About />
-  <Products />
-  <Sizes />
-  <HowToOrder />
-  <Gallery />
-  <Testimonials />
-  <Location />
-  <Faq />
-  <div class="stripe stripe-divider" aria-hidden="true"></div>
+
+  <!-- Teaser katalog -->
+  <section id="katalog" class="py-16 md:py-24">
+    <div class="mx-auto max-w-[1200px] px-5">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <h2 class="text-[clamp(2.1rem,5.5vw,3.5rem)] font-semibold leading-[1.08] text-balance">
+            Pilih kelemben Anda
+          </h2>
+          <p class="mt-3 max-w-xl text-lg leading-relaxed text-cokelat/85">
+            Empat varian, semuanya dipanggang harian di Banjarmasin.
+          </p>
+        </div>
+        <a href="/katalog" class="btn btn-ghost">Lihat katalog</a>
+      </div>
+
+      <div class="mt-8">
+        <FilterPills />
+      </div>
+
+      <div class="mt-10 grid grid-cols-2 gap-x-5 gap-y-10 md:grid-cols-4 md:gap-7" data-product-grid>
+        {products.map((product) => (
+          <ProductCard product={product} headingLevel="h3" />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Tentang -->
+  <section id="tentang" class="bg-susu py-16 md:py-24">
+    <div class="mx-auto grid max-w-[1200px] items-center gap-10 px-5 md:grid-cols-2">
+      <Image
+        src={aboutImg}
+        alt="Tekstur crumb bolu kelemben dari dekat"
+        widths={[640, 1024]}
+        sizes="(max-width: 900px) 92vw, 540px"
+        loading="lazy"
+        class="aspect-[4/3] w-full rounded-md border border-cokelat/12 object-cover"
+      />
+      <div>
+        <h2 class="text-[clamp(2.1rem,5.5vw,3.2rem)] font-semibold leading-[1.1] text-balance">
+          Bolu kelemben khas Banjarmasin
+        </h2>
+        <p class="mt-5 text-lg leading-relaxed text-cokelat/85">
+          {business.description}
+        </p>
+        <p class="mt-4 leading-relaxed text-cokelat/85">
+          Teksturnya lembut dengan rongga halus, dipotong tebal agar mudah disantap bersama teh
+          atau kopi.
+        </p>
+        <a href="/tentang" class="btn btn-ghost mt-7">Tentang Bolu Dadang</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Value props -->
+  <section class="py-16 md:py-24">
+    <div class="mx-auto max-w-[1200px] px-5">
+      <h2 class="max-w-2xl text-[clamp(1.9rem,4.5vw,2.8rem)] font-semibold leading-tight">
+        Kenapa kelemben kami
+      </h2>
+      <div class="mt-10 grid gap-8 border-t border-cokelat/12 pt-10 md:grid-cols-3">
+        {valueProps.map((prop) => (
+          <div class="border-l-2 border-mentega pl-6">
+            <h3 class="text-xl font-semibold">{prop.title}</h3>
+            <p class="mt-3 leading-relaxed text-cokelat/85">{prop.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimoni -->
+  <section class="bg-susu py-16 md:py-24">
+    <div class="mx-auto max-w-[1200px] px-5">
+      <TestimonialCarousel />
+    </div>
+  </section>
+
+  <!-- Kontak / WhatsApp -->
+  <section id="kontak" class="py-16 md:py-24">
+    <div class="mx-auto max-w-[1200px] px-5">
+      <div class="rounded-md bg-cokelat px-6 py-12 text-susu md:px-12 md:py-16">
+        <div class="grid gap-10 md:grid-cols-[1.2fr_1fr]">
+          <div>
+            <h2 class="text-[clamp(2rem,5vw,3rem)] font-semibold leading-[1.1] text-balance">
+              Mau pesan atau tanya-tanya dulu?
+            </h2>
+            <p class="mt-5 max-w-lg text-lg leading-relaxed text-susu/85">
+              Chat kami di WhatsApp. Harga, ketersediaan, dan ongkir dikonfirmasi di sana sebelum
+              pesanan diproses.
+            </p>
+            {waGeneral && (
+              <a href={waGeneral} target="_blank" rel="noopener noreferrer" class="btn btn-mentega mt-8">
+                <WaIcon class="h-4 w-4" />
+                <span>Pesan via WhatsApp</span>
+              </a>
+            )}
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-mentega">Kunjungi</h3>
+            <address class="mt-4 not-italic leading-relaxed text-susu/85">
+              {business.address.street}<br />
+              {business.address.city}, {business.address.province}
+            </address>
+            <ul class="mt-4 space-y-1 text-susu/85">
+              {business.hours.map((h) => (
+                <li>{h.days}, pukul {h.time}</li>
+              ))}
+            </ul>
+            <a href="/lokasi" class="btn btn-ghost-light mt-6">Lihat lokasi</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </Layout>

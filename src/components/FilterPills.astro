@@ -1,0 +1,22 @@
+---
+import { categories } from "../data/catalog";
+
+interface Props {
+  /** id kategori yang aktif saat render awal (dipilih JS dari ?kategori=). */
+  active?: string;
+}
+
+const { active = "semua" } = Astro.props;
+---
+<nav aria-label="Filter kategori" class="flex flex-wrap gap-2" data-filter-group>
+  {categories.map((c) => (
+    <a
+      href={`?kategori=${c.id}`}
+      data-filter={c.id}
+      class:list={["pill", c.id === active && "is-active"]}
+      aria-current={c.id === active ? "true" : undefined}
+    >
+      {c.label}
+    </a>
+  ))}
+</nav>

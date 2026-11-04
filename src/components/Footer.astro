@@ -8,10 +8,11 @@ const waGeneral = business.phone
   : "";
 
 const nav = [
-  { href: "#menu", label: "Menu" },
-  { href: "#cara-pesan", label: "Cara pesan" },
-  { href: "#lokasi", label: "Lokasi" },
-  { href: "#faq", label: "FAQ" },
+  { href: "/", label: "Beranda" },
+  { href: "/katalog", label: "Katalog" },
+  { href: "/tentang", label: "Tentang" },
+  { href: "/lokasi", label: "Lokasi" },
+  { href: "/keranjang", label: "Keranjang" },
 ];
 
 const year = new Date().getFullYear();
@@ -21,7 +22,7 @@ const year = new Date().getFullYear();
     <div class="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
       <div>
         <p class="display text-4xl font-semibold">{business.name}</p>
-        <p class="mt-3 max-w-sm leading-relaxed text-susu/80">{business.description}</p>
+        <p class="mt-3 max-w-sm leading-relaxed text-susu/85">{business.description}</p>
         {waGeneral && (
           <a href={waGeneral} target="_blank" rel="noopener noreferrer" class="btn btn-mentega mt-6">
             <WaIcon class="h-4 w-4" />
@@ -35,7 +36,7 @@ const year = new Date().getFullYear();
         <ul class="mt-4 space-y-1">
           {nav.map((item) => (
             <li>
-              <a href={item.href} class="inline-flex min-h-11 min-w-11 items-center text-susu/80 transition-colors hover:text-mentega">
+              <a href={item.href} class="inline-flex min-h-11 min-w-11 items-center text-susu/85 transition-colors hover:text-mentega">
                 {item.label}
               </a>
             </li>
@@ -45,12 +46,12 @@ const year = new Date().getFullYear();
 
       <div>
         <h2 class="text-lg font-semibold text-mentega">Kunjungi</h2>
-        <address class="mt-4 not-italic leading-relaxed text-susu/80">
+        <address class="mt-4 not-italic leading-relaxed text-susu/85">
           {business.address.street}<br />
           {business.address.city}, {business.address.province}
         </address>
         {business.hours.length > 0 && (
-          <ul class="mt-4 space-y-1 text-susu/80">
+          <ul class="mt-4 space-y-1 text-susu/85">
             {business.hours.map((h) => (
               <li>{h.days}, pukul {h.time}</li>
             ))}
@@ -59,7 +60,7 @@ const year = new Date().getFullYear();
       </div>
     </div>
 
-    <div class="mt-12 flex flex-col gap-3 border-t border-susu/15 pt-6 text-sm text-susu/70 sm:flex-row sm:items-center sm:justify-between">
+    <div class="mt-12 flex flex-col gap-3 border-t border-susu/20 pt-6 text-sm text-susu/80 sm:flex-row sm:items-center sm:justify-between">
       <p>© {year} {business.name}. Wadai kelemben khas Banjarmasin.</p>
       <p>Foto ilustrasi AI (Nano Banana) — ganti dengan foto asli sebelum publikasi</p>
     </div>

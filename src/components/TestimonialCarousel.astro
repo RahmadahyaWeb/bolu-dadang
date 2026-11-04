@@ -1,0 +1,58 @@
+---
+import { business } from "../data/business";
+
+const items = business.testimonials;
+const isExample = business.testimonialsAreExamples;
+---
+<div data-carousel>
+  <div class="flex flex-wrap items-baseline justify-between gap-3">
+    <h2 class="text-[clamp(1.9rem,4.5vw,2.8rem)] font-semibold leading-tight">Kata pelanggan</h2>
+    <p class="text-sm text-karamel" data-carousel-counter aria-live="polite">1 / {items.length}</p>
+  </div>
+
+  {isExample && (
+    <p class="mt-2 text-sm text-karamel">
+      Kutipan di bawah adalah contoh, bukan ulasan asli.
+    </p>
+  )}
+
+  <ul
+    data-carousel-track
+    class="hide-scrollbar mt-8 flex snap-x snap-mandatory gap-6 overflow-x-auto pb-2"
+  >
+    {items.map((t) => (
+      <li class="w-full shrink-0 snap-start md:w-[calc(50%-0.75rem)]">
+        <blockquote class="h-full border-l-2 border-mentega pl-6">
+          <p class="display text-[1.35rem] leading-snug text-balance">“{t.quote}”</p>
+          <footer class="mt-5 flex items-center gap-3">
+            <cite class="text-sm font-semibold not-italic text-karamel">{t.author}</cite>
+            {(t.source === "Contoh" || isExample) && <span class="badge">Contoh</span>}
+          </footer>
+        </blockquote>
+      </li>
+    ))}
+  </ul>
+
+  <div class="mt-6 flex gap-2">
+    <button
+      type="button"
+      data-carousel-prev
+      aria-label="Testimoni sebelumnya"
+      class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-cokelat/25 transition-colors hover:border-pandan hover:text-pandan"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-5 w-5" aria-hidden="true" focusable="false">
+        <path d="M14 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    </button>
+    <button
+      type="button"
+      data-carousel-next
+      aria-label="Testimoni berikutnya"
+      class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-cokelat/25 transition-colors hover:border-pandan hover:text-pandan"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-5 w-5" aria-hidden="true" focusable="false">
+        <path d="M10 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    </button>
+  </div>
+</div>

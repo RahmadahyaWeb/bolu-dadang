@@ -109,6 +109,13 @@
     outline-offset: 3px;
   }
 
+  .btn:disabled,
+  .btn:disabled:hover {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+  }
+
   .btn-mentega {
     background-color: var(--color-mentega);
     color: var(--color-cokelat);
@@ -298,7 +305,7 @@
     }
   }
 
-  @media (min-width: 640px) {
+  @media (min-width: 768px) {
     .cart-panel {
       animation-name: panel-right;
     }

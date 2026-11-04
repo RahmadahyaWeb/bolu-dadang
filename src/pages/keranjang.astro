@@ -1,0 +1,53 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import { business } from "../data/business";
+import { waLink } from "../lib/wa";
+
+const title = `Keranjang — ${business.name}`;
+const description =
+  "Periksa isi keranjang Bolu Dadang: ubah jumlah, hapus item, lalu lanjutkan ke konfirmasi pesanan via WhatsApp.";
+
+const waGeneral = business.phone
+  ? waLink(business.phone, business.orderTemplate.replace("{flavor}", "yang tersedia"))
+  : "";
+---
+<Layout title={title} description={description} floatingWa={false}>
+  <div class="mx-auto max-w-[1200px] px-5 pt-8">
+    <Breadcrumbs items={[{ label: "Beranda", href: "/" }, { label: "Keranjang" }]} />
+  </div>
+
+  <section class="pb-16 pt-6 md:pb-24">
+    <div class="mx-auto max-w-[820px] px-5">
+      <h1 class="text-[clamp(2.3rem,6vw,3.8rem)] font-semibold leading-[1.08]">
+        Keranjang
+      </h1>
+
+      <noscript>
+        <p class="mt-6 rounded-md border border-cokelat/20 bg-susu/70 p-5 leading-relaxed">
+          Keranjang butuh JavaScript di browser Anda.
+          {waGeneral ? (
+            <>Untuk pesan langsung,{" "}
+              <a
+                href={waGeneral}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="font-medium text-pandan underline decoration-mentega decoration-2 underline-offset-4"
+              >chat kami di WhatsApp</a>.
+            </>
+          ) : (
+            "Nomor WhatsApp belum tersedia."
+          )}
+        </p>
+      </noscript>
+
+      <div class="mt-8" data-cart-page>
+        <!-- Dirender oleh src/scripts/site.ts; fallback = keranjang kosong. -->
+        <div class="py-10 text-center">
+          <p class="text-lg font-medium">Keranjang Anda masih kosong.</p>
+          <a href="/katalog" class="btn btn-mentega mt-5">Lihat katalog</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

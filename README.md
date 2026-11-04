@@ -1,7 +1,19 @@
-# Bolu Dadang — Landing Page
+# Bolu Dadang — Toko Online Statis
 
-Landing page statis untuk **Bolu Dadang**, usaha kue bolu kelemben di Banjarmasin.
-Stack: Astro 7 (static) + Tailwind CSS 4. Tidak ada backend.
+Situs multi-halaman untuk **Bolu Dadang**, usaha kue bolu kelemben di Banjarmasin.
+Stack: Astro 7 (static) + Tailwind CSS 4. Tanpa backend; checkout berakhir di WhatsApp.
+
+## Halaman
+
+| Route | Isi |
+|---|---|
+| `/` | Beranda: hero, teaser katalog, tentang, nilai, testimoni, kontak |
+| `/katalog` | Semua produk + filter kategori (`?kategori=pandan`) |
+| `/produk/[slug]` | Detail produk, galeri, info, qty, tambah ke keranjang |
+| `/keranjang` | Keranjang penuh, ubah qty, hapus |
+| `/checkout` | Konfirmasi pesanan → pesan WhatsApp |
+| `/tentang` | Cerita dan nilai usaha |
+| `/lokasi` | Alamat, jam, peta statis OpenStreetMap |
 
 ## Menjalankan
 
@@ -9,37 +21,48 @@ Stack: Astro 7 (static) + Tailwind CSS 4. Tidak ada backend.
 npm install
 npm run dev      # http://localhost:4321
 npm run build    # output ke dist/
-npm run preview  # preview build
-npm run verify   # cek artefak build
-npm test         # uji helper waLink
+npm run preview
+npm run verify   # cek semua route & aset hasil build
+npm test         # cart, order, wa
 ```
 
-## Mengganti data bisnis
+## Data
 
-Semua data bisnis ada di `src/data/business.ts`. Edit file itu, lalu `npm run build`.
+- **Kontak, alamat, jam, FAQ, testimoni:** `src/data/business.ts`
+- **Produk & kategori:** `src/data/catalog.ts`
+- **Keranjang:** `src/lib/cart.ts` (localStorage `bolu-cart-v1`)
+- **Pesan checkout:** `src/lib/order.ts`
 
 Yang wajib diisi sebelum publikasi (tandai `TODO(owner)`):
-- `sizes[].priceFrom` (harga per ukuran, rupiah utuh, mis. `50000`).
-- `hours` jika jam buka berubah.
-- `testimonials` → ganti 3 kutipan contoh dengan ulasan asli, lalu set `testimonialsAreExamples: false`.
-- `links.instagram` jika ada akun Instagram.
+- `priceFrom` per produk di `catalog.ts` — selama kosong, UI menampilkan "Tanya harga".
+- `ingredients`, `allergens`, `storage`, `packaging` — hanya jika sudah dikonfirmasi. Selama kosong, PDP menampilkan satu accordion CTA tanya via WhatsApp.
+- `weight`, `servings` bila tersedia.
+- `testimonials` → ganti kutipan contoh dengan ulasan asli, lalu set `testimonialsAreExamples: false`.
+- Jam buka dan nomor WhatsApp di `business.ts`.
 
-Nomor WhatsApp disimpan di `business.phone` dalam bentuk digit `62…` (mis. `6281247189174`).
+Nomor WhatsApp disimpan sebagai digit `62…` (mis. `6281247189174`). Nomor kosong = CTA WA disembunyikan.
 
-## Mengganti foto
+## Keranjang & checkout
 
-Semua foto disimpan lokal di `src/assets/`:
+- Item disimpan di `localStorage`, bertahan setelah refresh dan antar halaman.
+- Qty 1–20; qty 0 menghapus item.
+- Subtotal hanya tampil jika semua produk punya `priceFrom`; jika tidak, "Dihitung via WhatsApp".
+- Checkout mewajibkan nama, nomor WA, dan mode ambil/kirim. Tanggal, alamat, dan catatan opsional.
+- Tombol checkout membentuk pesan terstruktur lalu membuka `wa.me`. Tidak ada pembayaran online.
 
-- `src/assets/hero.jpg` — foto hero.
-- `src/assets/products/original.jpg`, `pandan.jpg`, `coklat.jpg`, `zebra.jpg` — foto varian.
-- `src/assets/gallery/01.jpg` … `06.jpg` — galeri.
-- `src/assets/about-texture.jpg` — tekstur/crumb (dipakai di section Tentang).
-- `public/og.jpg` — gambar Open Graph (1200×630).
+## Foto
 
-Cukup timpa file dengan nama yang sama; `npm run build` akan memproses ulang.
-Foto saat ini adalah ilustrasi AI (Gemini/Nano Banana) dan wajib diganti foto asli sebelum publikasi; lihat `CREDITS.md` dan `docs/image-prompts.md`.
+Semua foto lokal di `src/assets/`:
 
-## Deploy
+- `hero.jpg`, `products/{original,pandan,coklat,zebra}.jpg`
+- `gallery/01.jpg` … `06.jpg`
+- `about-texture.jpg`
+- `public/og.jpg` (1200×630), `public/map.jpg` (OpenStreetMap)
 
-Output statis ada di `dist/`. Dapat di-deploy ke Vercel, Netlify, atau Cloudflare Pages.
-Jangan lupa set `site` di `astro.config.mjs` ke domain final sebelum deploy (untuk canonical & OG).
+Timpa file dengan nama sama, lalu `npm run build`. Foto saat ini adalah ilustrasi AI dan **wajib diganti foto asli** sebelum publikasi; lihat `CREDITS.md` dan `docs/image-prompts.md`.
+
+## Verifikasi
+
+- `npm run verify` memeriksa 10 halaman hasil build: satu `<h1>`, title/description/canonical/OG, JSON-LD, link internal, `wa.me/62`, aset, dan larangan `TODO`/`lorem`.
+- `npm test` menguji `cart.ts`, `order.ts`, `wa.ts`.
+- Screenshot QA (tidak di-commit) ada di `qa-screenshots/`.
