@@ -13,6 +13,13 @@
   --font-body: "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, sans-serif;
 }
 
+/* Motion tokens (skill: animate) */
+:root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1); /* entrance/exit, hover */
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1); /* on-screen movement */
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1); /* drawer/sheet */
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -82,10 +89,10 @@
     line-height: 1.15;
     text-align: center;
     transition:
-      transform 0.25s ease,
-      background-color 0.25s ease,
-      color 0.25s ease,
-      border-color 0.25s ease;
+      transform 160ms var(--ease-out),
+      background-color 200ms ease,
+      color 200ms ease,
+      border-color 200ms ease;
   }
 
   .btn:focus-visible {
@@ -105,19 +112,9 @@
     color: var(--color-cokelat);
   }
 
-  .btn-mentega:hover {
-    background-color: #e0a52c;
-    transform: translateY(-2px);
-  }
-
   .btn-pandan {
     background-color: var(--color-pandan);
     color: var(--color-susu);
-  }
-
-  .btn-pandan:hover {
-    background-color: #26492e;
-    transform: translateY(-2px);
   }
 
   .btn-ghost {
@@ -125,19 +122,9 @@
     color: var(--color-cokelat);
   }
 
-  .btn-ghost:hover {
-    border-color: var(--color-pandan);
-    color: var(--color-pandan);
-  }
-
   .btn-ghost-light {
     border: 2px solid color-mix(in srgb, var(--color-susu) 45%, transparent);
     color: var(--color-susu);
-  }
-
-  .btn-ghost-light:hover {
-    border-color: var(--color-mentega);
-    color: var(--color-mentega);
   }
 
   /* small honest labels: "Contoh", "Favorit" */
@@ -166,14 +153,10 @@
     font-size: 0.95rem;
     font-weight: 500;
     transition:
-      background-color 0.2s ease,
-      color 0.2s ease,
-      border-color 0.2s ease;
-  }
-
-  .pill:hover {
-    border-color: var(--color-pandan);
-    color: var(--color-pandan);
+      transform 160ms var(--ease-out),
+      background-color 200ms ease,
+      color 200ms ease,
+      border-color 200ms ease;
   }
 
   .pill.is-active {
@@ -215,6 +198,152 @@
   }
 }
 
+/* ---------- motion ---------- */
+
+/* pressable icon controls: named properties only (no transition: all) */
+[data-step],
+[data-cart-action],
+[data-cart-open],
+[data-cart-close],
+[data-nav-toggle],
+[data-carousel-prev],
+[data-carousel-next],
+[data-gallery-thumb] {
+  transition:
+    transform 160ms var(--ease-out),
+    background-color 200ms ease,
+    color 200ms ease,
+    border-color 200ms ease;
+}
+
+/* press feedback: 160ms, scale 0.97 (recipe: button press) */
+.btn:active,
+.pill:active,
+[data-step]:active,
+[data-cart-action]:active,
+[data-cart-open]:active,
+[data-cart-close]:active,
+[data-nav-toggle]:active,
+[data-carousel-prev]:active,
+[data-carousel-next]:active,
+[data-gallery-thumb]:active,
+[data-fab]:active {
+  transform: scale(0.97);
+}
+
+/* hover motion: fine pointers only */
+@media (hover: hover) and (pointer: fine) {
+  .btn-mentega:hover {
+    background-color: #e0a52c;
+    transform: translateY(-2px);
+  }
+
+  .btn-pandan:hover {
+    background-color: #26492e;
+    transform: translateY(-2px);
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--color-pandan);
+    color: var(--color-pandan);
+    transform: translateY(-2px);
+  }
+
+  .btn-ghost-light:hover {
+    border-color: var(--color-mentega);
+    color: var(--color-mentega);
+    transform: translateY(-2px);
+  }
+
+  .pill:hover {
+    border-color: var(--color-pandan);
+    color: var(--color-pandan);
+  }
+
+  .group:hover .card-img {
+    transform: scale(1.02);
+  }
+
+  .btn:disabled,
+  .btn:disabled:hover {
+    opacity: 0.55;
+    transform: none;
+  }
+}
+
+/* product card image: hover scale 1.02, 200ms */
+.card-img {
+  transition: transform 200ms var(--ease-out);
+}
+
+/* accordion plus: rotate 200ms */
+.plus-icon {
+  transition: rotate 200ms var(--ease-out);
+}
+
+.group[open] .plus-icon {
+  rotate: 45deg;
+}
+
+/* floating WA: 200ms opacity + translateY(8px) + scale(0.96) */
+[data-fab] {
+  opacity: 0;
+  transform: translateY(8px) scale(0.96);
+  pointer-events: none;
+  transition:
+    opacity 200ms var(--ease-out),
+    transform 200ms var(--ease-out);
+}
+
+[data-fab].is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* drawer/sheet + mobile menu: transitions (retarget on fast toggle), exit simetris.
+   Bottom sheet translateY(100%) di <768px, panel kanan translateX(100%) di >=768px. */
+.cart-panel {
+  transform: translateY(100%);
+  transition: transform 300ms var(--ease-drawer);
+}
+
+[data-open] .cart-panel {
+  transform: translateY(0);
+}
+
+@media (min-width: 768px) {
+  .cart-panel {
+    transform: translateX(100%);
+  }
+
+  [data-open] .cart-panel {
+    transform: translateX(0);
+  }
+}
+
+.cart-backdrop {
+  opacity: 0;
+  transition: opacity 200ms var(--ease-out);
+}
+
+[data-open] .cart-backdrop {
+  opacity: 1;
+}
+
+[data-nav-drawer] {
+  opacity: 0;
+  transform: translateY(-8px);
+  transition:
+    opacity 200ms var(--ease-out),
+    transform 200ms var(--ease-out);
+}
+
+[data-nav-drawer][data-open] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* carousel: no visible scrollbar */
 .hide-scrollbar {
   scrollbar-width: none;
@@ -224,104 +353,95 @@
   display: none;
 }
 
-/* floating WA: hidden until JS reveals it past the hero.
-   <noscript> in Layout shows it when JS is off. */
-[data-fab] {
-  opacity: 0;
-  transform: translateY(14px) scale(0.9);
-  pointer-events: none;
-  transition:
-    opacity 0.35s ease,
-    transform 0.35s ease;
-}
-
-[data-fab].is-visible {
-  opacity: 1;
-  transform: none;
-  pointer-events: auto;
-}
-
-/* one orchestrated moment: the hero load sequence */
+/* hero entrance: satu blok singkat, 3 stagger max 50ms, sekali saat load */
 @media (prefers-reduced-motion: no-preference) {
   .rise {
-    animation: rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-
-  .rise-1 {
-    animation-delay: 0.05s;
+    animation: rise 350ms var(--ease-out) both;
   }
 
   .rise-2 {
-    animation-delay: 0.15s;
+    animation-delay: 50ms;
   }
 
   .rise-3 {
-    animation-delay: 0.25s;
-  }
-
-  .rise-4 {
-    animation-delay: 0.35s;
+    animation-delay: 100ms;
   }
 
   @keyframes rise {
     from {
       opacity: 0;
-      transform: translateY(22px);
+      transform: translateY(8px);
     }
     to {
       opacity: 1;
       transform: translateY(0);
-    }
-  }
-
-  .cart-panel {
-    animation: sheet-up 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-
-  @keyframes sheet-up {
-    from {
-      transform: translateY(28px);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-
-  @media (min-width: 768px) {
-    .cart-panel {
-      animation-name: panel-right;
-    }
-
-    @keyframes panel-right {
-      from {
-        transform: translateX(32px);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
     }
   }
 }
 
+/* reduced motion: keep opacity/color feedback, drop movement */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
 
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+  .rise {
+    animation: fade-in 200ms ease both;
   }
 
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .cart-panel,
+  [data-nav-drawer],
   [data-fab] {
+    opacity: 0;
     transform: none;
+    transition: opacity 200ms ease;
+  }
+
+  [data-open] .cart-panel,
+  [data-nav-drawer][data-open],
+  [data-fab].is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  .cart-backdrop {
+    transition: opacity 200ms ease;
+  }
+
+  .plus-icon {
+    transition: none;
+  }
+
+  .btn:active,
+  .pill:active,
+  [data-step]:active,
+  [data-cart-action]:active,
+  [data-cart-open]:active,
+  [data-cart-close]:active,
+  [data-nav-toggle]:active,
+  [data-carousel-prev]:active,
+  [data-carousel-next]:active,
+  [data-gallery-thumb]:active,
+  [data-fab]:active {
+    transform: none;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .btn-mentega:hover,
+    .btn-pandan:hover,
+    .btn-ghost:hover,
+    .btn-ghost-light:hover,
+    .group:hover .card-img {
+      transform: none;
+    }
   }
 }

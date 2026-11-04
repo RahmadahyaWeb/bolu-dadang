@@ -184,32 +184,66 @@ function save(): void {
   render();
 }
 
-/* ---------- drawer (keranjang) ---------- */
+/* ---------- drawer (keranjang) & menu mobile ---------- */
 
 const drawer = document.querySelector<HTMLElement>("[data-cart-drawer]");
 const navDrawer = document.querySelector<HTMLElement>("[data-nav-drawer]");
 const navToggle = document.querySelector<HTMLElement>("[data-nav-toggle]");
 let lastFocus: Element | null = null;
 
+// Buka: lepas hidden, flush layout, lalu state [data-open] memicu transisi.
+function openPanel(root: HTMLElement): void {
+  root.hidden = false;
+  void root.offsetWidth;
+  root.dataset.open = "";
+}
+
+// Tutup: transisi exit dulu, hidden setelah transitionend agar tidak menangkap fokus.
+function closePanel(root: HTMLElement, panel: HTMLElement, after?: () => void): void {
+  if (!root.hasAttribute("data-open")) return;
+  root.removeAttribute("data-open");
+
+  let done = false;
+  const finish = () => {
+    if (done || root.hasAttribute("data-open")) return; // dibatalkan: dibuka lagi
+    done = true;
+    root.hidden = true;
+    after?.();
+  };
+  const onEnd = (e: TransitionEvent) => {
+    if (e.target === panel && e.propertyName === "transform") {
+      panel.removeEventListener("transitionend", onEnd);
+      finish();
+    }
+  };
+  panel.addEventListener("transitionend", onEnd);
+  window.setTimeout(() => {
+    panel.removeEventListener("transitionend", onEnd);
+    finish();
+  }, 400);
+}
+
 function openDrawer(): void {
   if (!drawer) return;
   lastFocus = document.activeElement;
   renderDrawer();
-  drawer.hidden = false;
+  openPanel(drawer);
   document.body.style.overflow = "hidden";
   drawer.querySelector<HTMLElement>("[data-cart-close]")?.focus();
 }
 
 function closeDrawer(): void {
-  if (!drawer || drawer.hidden) return;
-  drawer.hidden = true;
+  if (!drawer || drawer.hidden || !drawer.hasAttribute("data-open")) return;
+  const panel = drawer.querySelector<HTMLElement>(".cart-panel");
+  if (!panel) return;
+  closePanel(drawer, panel);
   document.body.style.overflow = "";
   if (lastFocus instanceof HTMLElement) lastFocus.focus();
 }
 
 function closeNav(): void {
-  if (!navDrawer || navDrawer.hidden) return;
-  navDrawer.hidden = true;
+  if (!navDrawer || navDrawer.hidden || !navDrawer.hasAttribute("data-open")) return;
+  closePanel(navDrawer, navDrawer);
   navToggle?.setAttribute("aria-expanded", "false");
 }
 
@@ -227,9 +261,12 @@ document.addEventListener("click", (e) => {
   }
   if (t.closest("[data-nav-toggle]")) {
     if (!navDrawer) return;
-    const open = navDrawer.hidden;
-    navDrawer.hidden = !open;
-    navToggle?.setAttribute("aria-expanded", String(open));
+    if (navDrawer.hidden || !navDrawer.hasAttribute("data-open")) {
+      openPanel(navDrawer);
+      navToggle?.setAttribute("aria-expanded", "true");
+    } else {
+      closeNav();
+    }
     return;
   }
 
@@ -362,6 +399,9 @@ document.querySelectorAll<HTMLElement>("[data-carousel]").forEach((c) => {
   if (!slides.length) return;
 
   const step = () => slides[0].getBoundingClientRect().width + 24;
+  const behavior: ScrollBehavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ? "auto"
+    : "smooth";
   const update = () => {
     if (!counter) return;
     const i = Math.min(slides.length, Math.round(track.scrollLeft / step()) + 1);
@@ -369,10 +409,10 @@ document.querySelectorAll<HTMLElement>("[data-carousel]").forEach((c) => {
   };
 
   c.querySelector("[data-carousel-prev]")?.addEventListener("click", () =>
-    track.scrollBy({ left: -step(), behavior: "smooth" }),
+    track.scrollBy({ left: -step(), behavior }),
   );
   c.querySelector("[data-carousel-next]")?.addEventListener("click", () =>
-    track.scrollBy({ left: step(), behavior: "smooth" }),
+    track.scrollBy({ left: step(), behavior }),
   );
   track.addEventListener("scroll", update, { passive: true });
 });
