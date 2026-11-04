@@ -379,19 +379,6 @@ if (document.querySelector("[data-filter-group]")) {
   });
 }
 
-document.querySelector<HTMLSelectElement>("[data-sort]")?.addEventListener("change", (e) => {
-  const grid = document.querySelector("[data-product-grid]");
-  if (!grid) return;
-  const dir = (e.target as HTMLSelectElement).value;
-  [...grid.children]
-    .sort((a, b) => {
-      const na = (a as HTMLElement).dataset.nama || "";
-      const nb = (b as HTMLElement).dataset.nama || "";
-      return dir === "za" ? nb.localeCompare(na, "id") : na.localeCompare(nb, "id");
-    })
-    .forEach((card) => grid.appendChild(card));
-});
-
 /* ---------- carousel testimoni ---------- */
 
 document.querySelectorAll<HTMLElement>("[data-carousel]").forEach((c) => {
