@@ -1,0 +1,116 @@
+---
+import "@fontsource-variable/fraunces";
+import "@fontsource-variable/plus-jakarta-sans";
+import "../styles/global.css";
+
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import FloatingWa from "../components/FloatingWa.astro";
+import { business } from "../data/business";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = `${business.name} — Kelemben Khas Banjarmasin`,
+  description = business.description,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL("/og.jpg", Astro.site);
+const hasAddress = Boolean(business.address.street);
+
+const localBusinessLd = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  name: business.name,
+  description,
+  image: ogImage.href,
+  url: canonical.href,
+  ...(business.phone ? { telephone: `+${business.phone}` } : {}),
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: [business.address.street, business.address.district]
+      .filter(Boolean)
+      .join(", "),
+    addressLocality: business.address.city,
+    addressRegion: business.address.province,
+    ...(business.address.postalCode
+      ? { postalCode: business.address.postalCode }
+      : {}),
+    addressCountry: "ID",
+  },
+  openingHours: business.hours.map((h) => `${h.days} ${h.time}`),
+};
+
+const faqLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: business.faqs.map((f) => ({
+    "@type": "Question",
+    name: f.question,
+    acceptedAnswer: { "@type": "Answer", text: f.answer },
+  })),
+};
+---
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical.href} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={business.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical.href} />
+    <meta property="og:image" content={ogImage.href} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="id_ID" />
+    <meta name="twitter:card" content="summary_large_image" />
+    {hasAddress && <script type="application/ld+json" set:html={JSON.stringify(localBusinessLd)} />}
+    <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />
+    <noscript>
+      <style>
+        html [data-fab] {
+          opacity: 1;
+          transform: none;
+          pointer-events: auto;
+        }
+      </style>
+    </noscript>
+  </head>
+  <body>
+    <a
+      href="#konten"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[70] focus:rounded-full focus:bg-cocoa focus:px-5 focus:py-3 focus:text-cream"
+    >Lewati ke konten utama</a>
+    <Header />
+    <main id="konten">
+      <slot />
+    </main>
+    <Footer />
+    <FloatingWa />
+    <div class="grain-overlay" aria-hidden="true"></div>
+    <script is:inline>
+      (function () {
+        var fab = document.querySelector("[data-fab]");
+        var hero = document.querySelector("[data-hero]");
+        if (fab && hero && "IntersectionObserver" in window) {
+          var io = new IntersectionObserver(function (entries) {
+            fab.classList.toggle("is-visible", !entries[0].isIntersecting);
+          });
+          io.observe(hero);
+        } else if (fab) {
+          fab.classList.add("is-visible");
+        }
+      })();
+    </script>
+  </body>
+</html>

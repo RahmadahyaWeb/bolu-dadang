@@ -1,0 +1,43 @@
+---
+import { Image } from "astro:assets";
+import g1 from "../assets/gallery/01.jpg";
+import g2 from "../assets/gallery/02.jpg";
+import g3 from "../assets/gallery/03.jpg";
+import g4 from "../assets/gallery/04.jpg";
+import g5 from "../assets/gallery/05.jpg";
+import g6 from "../assets/gallery/06.jpg";
+
+const photos = [
+  { src: g1, alt: "Kelemben Bolu Dadang siap disajikan" },
+  { src: g2, alt: "Kelemben dipotong di atas talenan kayu" },
+  { src: g3, alt: "Proses pemanggangan kelemben di dapur" },
+  { src: g4, alt: "Kelemben segar di atas loyang" },
+  { src: g5, alt: "Penyajian kelemben untuk teman minum teh" },
+  { src: g6, alt: "Kelemben siap dibungkus untuk pesanan" },
+];
+---
+<section id="galeri" class="py-16 md:py-24">
+  <div class="mx-auto max-w-[1200px] px-5">
+    <div class="max-w-2xl">
+      <p class="text-sm font-semibold uppercase tracking-[0.18em] text-caramel">Galeri</p>
+      <h2 class="mt-3 font-display text-[clamp(2rem,5vw,3.25rem)] font-semibold leading-tight text-balance">
+        Lihat kelemben kami lebih dekat
+      </h2>
+    </div>
+
+    <div class="mt-10 grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5">
+      {photos.map((photo, i) => (
+        <figure class={`overflow-hidden rounded-2xl ${i === 0 ? "md:col-span-2" : ""}`}>
+          <Image
+            src={photo.src}
+            alt={photo.alt}
+            widths={[360, 720]}
+            sizes={i === 0 ? "(min-width: 768px) 66vw, 50vw" : "(min-width: 768px) 33vw, 50vw"}
+            loading="lazy"
+            class="h-full w-full aspect-[4/3] object-cover transition-transform motion-safe:duration-500 motion-safe:hover:scale-[1.05]"
+          />
+        </figure>
+      ))}
+    </div>
+  </div>
+</section>

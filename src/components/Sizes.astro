@@ -1,0 +1,54 @@
+---
+import { business } from "../data/business";
+import { waLink } from "../lib/wa";
+import WaIcon from "./WaIcon.astro";
+
+const rupiah = (value: number) =>
+  new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    maximumFractionDigits: 0,
+  }).format(value);
+
+const waGeneral = business.phone
+  ? waLink(business.phone, business.orderTemplate.replace("{flavor}", "yang tersedia"))
+  : "";
+---
+<section class="pb-16 md:pb-24">
+  <div class="mx-auto max-w-[1200px] px-5">
+    <div class="max-w-2xl">
+      <p class="text-sm font-semibold uppercase tracking-[0.18em] text-caramel">Ukuran &amp; harga</p>
+      <h2 class="mt-3 font-display text-[clamp(2rem,5vw,3.25rem)] font-semibold leading-tight text-balance">
+        Dua ukuran, sesuai kebutuhan Anda
+      </h2>
+      <p class="mt-4 text-lg leading-relaxed text-cocoa/80">
+        Harga dikonfirmasi lewat WhatsApp sesuai varian dan jumlah pesanan.
+      </p>
+    </div>
+
+    <div class="mt-10 grid gap-6 sm:grid-cols-2">
+      {business.sizes.map((size) => (
+        <article class="flex flex-col items-start rounded-3xl border border-caramel/15 bg-butter/45 p-8">
+          <h3 class="font-display text-3xl font-semibold text-cocoa">{size.label}</h3>
+          {size.note && <p class="mt-2 text-cocoa/75">{size.note}</p>}
+
+          <p class="mt-6 text-lg font-semibold text-pandan">
+            {size.priceFrom != null ? rupiah(size.priceFrom) : "Tanya harga via WhatsApp"}
+          </p>
+
+          {waGeneral && (
+            <a
+              href={waGeneral}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="mt-5 inline-flex min-h-11 items-center gap-2.5 rounded-full border-2 border-pandan px-6 py-2.5 font-semibold text-pandan transition-colors hover:bg-pandan hover:text-cream"
+            >
+              <WaIcon class="h-4 w-4" />
+              <span>Pesan via WhatsApp</span>
+            </a>
+          )}
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

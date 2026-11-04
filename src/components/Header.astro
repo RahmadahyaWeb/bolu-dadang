@@ -1,0 +1,45 @@
+---
+import { business } from "../data/business";
+import { waLink } from "../lib/wa";
+import WaIcon from "./WaIcon.astro";
+
+const nav = [
+  { href: "#menu", label: "Menu" },
+  { href: "#cara-pesan", label: "Cara Pesan" },
+  { href: "#lokasi", label: "Lokasi" },
+];
+
+const waGeneral = business.phone
+  ? waLink(business.phone, business.orderTemplate.replace("{flavor}", "yang tersedia"))
+  : "";
+---
+<header
+  data-header
+  class="relative z-40 bg-cream md:sticky md:top-0 md:bg-cream/90 md:backdrop-blur-sm"
+>
+  <div class="mx-auto flex max-w-[1200px] items-center justify-between gap-4 px-5 py-3">
+    <a href="#konten" class="font-display text-xl font-semibold tracking-tight text-cocoa">
+      {business.shortName}
+    </a>
+
+    <nav aria-label="Navigasi utama" class="hidden items-center gap-8 text-sm font-medium text-cocoa/80 md:flex">
+      {nav.map((item) => (
+        <a href={item.href} class="min-h-11 content-center rounded-md transition-colors hover:text-pandan">
+          {item.label}
+        </a>
+      ))}
+    </nav>
+
+    {waGeneral && (
+      <a
+        href={waGeneral}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex min-h-11 items-center gap-2 rounded-full bg-marigold px-5 py-2.5 text-sm font-semibold text-cocoa shadow-sm transition-transform motion-safe:duration-300 motion-safe:hover:-translate-y-0.5"
+      >
+        <WaIcon class="h-4 w-4" />
+        <span>Pesan via WhatsApp</span>
+      </a>
+    )}
+  </div>
+</header>

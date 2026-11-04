@@ -1,0 +1,37 @@
+---
+import { business } from "../data/business";
+---
+<section id="testimoni" class="bg-butter/60 py-16 md:py-24">
+  <div class="mx-auto max-w-[1200px] px-5">
+    <div class="max-w-2xl">
+      <p class="text-sm font-semibold uppercase tracking-[0.18em] text-caramel">Testimoni</p>
+      <h2 class="mt-3 font-display text-[clamp(2rem,5vw,3.25rem)] font-semibold leading-tight text-balance">
+        Kata mereka yang sudah mencoba
+      </h2>
+      {business.testimonialsAreExamples && (
+        <p class="mt-4 rounded-full bg-marigold/25 px-4 py-2 text-sm font-medium text-cocoa/80">
+          Kutipan di bawah adalah contoh tampilan. Ulasan asli dari pelanggan akan menyusul.
+        </p>
+      )}
+    </div>
+
+    <div class="mt-10 grid gap-6 md:grid-cols-3">
+      {business.testimonials.map((t) => (
+        <figure class="flex h-full flex-col rounded-3xl bg-cream p-7 shadow-[0_24px_50px_-34px_rgba(46,27,15,0.55)]">
+          <span class="font-display text-5xl leading-none text-marigold" aria-hidden="true">&ldquo;</span>
+          <blockquote class="mt-3 flex-1 text-lg leading-relaxed text-cocoa/85">
+            {t.quote}
+          </blockquote>
+          <figcaption class="mt-6 flex flex-wrap items-center gap-3">
+            <span class="font-semibold text-cocoa">{t.author}</span>
+            {business.testimonialsAreExamples && (
+              <span class="rounded-full border border-caramel/30 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-caramel">
+                Contoh
+              </span>
+            )}
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  </div>
+</section>
