@@ -1,6 +1,7 @@
 ---
 import { business } from "../data/business";
 import { waLink } from "../lib/wa";
+import { href } from "../lib/path";
 import WaIcon from "./WaIcon.astro";
 
 const waGeneral = business.phone
@@ -36,7 +37,7 @@ const year = new Date().getFullYear();
         <ul class="mt-4 space-y-1">
           {nav.map((item) => (
             <li>
-              <a href={item.href} class="inline-flex min-h-11 min-w-11 items-center text-susu/85 transition-colors hover:text-mentega">
+              <a href={href(item.href)} class="inline-flex min-h-11 min-w-11 items-center text-susu/85 transition-colors hover:text-mentega">
                 {item.label}
               </a>
             </li>

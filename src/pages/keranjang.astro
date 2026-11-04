@@ -3,6 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import Breadcrumbs from "../components/Breadcrumbs.astro";
 import { business } from "../data/business";
 import { waLink } from "../lib/wa";
+import { href } from "../lib/path";
 
 const title = `Keranjang — ${business.name}`;
 const description =
@@ -45,7 +46,7 @@ const waGeneral = business.phone
         <!-- Dirender oleh src/scripts/site.ts; fallback = keranjang kosong. -->
         <div class="py-10 text-center">
           <p class="text-lg font-medium">Keranjang Anda masih kosong.</p>
-          <a href="/katalog" class="btn btn-mentega mt-5">Lihat katalog</a>
+          <a href={href("/katalog")} class="btn btn-mentega mt-5">Lihat katalog</a>
         </div>
       </div>
     </div>

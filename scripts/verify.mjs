@@ -2,6 +2,8 @@ import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 
 const dist = "dist";
+const repo = process.env.GITHUB_REPOSITORY?.split("/")[1] ?? "bolu-dadang";
+const base = `/${repo}`;
 const routes = [
   "index.html",
   "katalog/index.html",
@@ -68,7 +70,9 @@ for (const [route, html] of pages) {
     if (href.startsWith("http") || href.startsWith("mailto:") || href.startsWith("#")) continue;
     if (href.startsWith("/_astro/") || href.startsWith("/map.jpg") || href.startsWith("/og.jpg")) continue;
     if (href.startsWith("/")) {
-      const clean = href.split("?")[0].split("#")[0].replace(/\/$/, "");
+      const raw = href.split("?")[0].split("#")[0];
+      check(`${name}: link internal memakai base ${href}`, raw === base || raw.startsWith(base + "/") || raw === "/");
+      const clean = (raw === base ? "/" : raw.slice(base.length)).replace(/\/$/, "");
       const candidates = [
         join(dist, clean.slice(1), "index.html"),
         join(dist, clean.slice(1) + ".html"),
@@ -92,7 +96,10 @@ for (const html of pages.values()) {
     for (const part of m[1].split(",")) {
       const src = part.trim().split(" ")[0];
       if (!src || src.startsWith("http")) continue;
-      if (src.startsWith("/")) referenced.add(src.split("?")[0]);
+      if (src.startsWith("/")) {
+        const raw = src.split("?")[0];
+        referenced.add(raw.startsWith(base) ? raw.slice(base.length) || "/" : raw);
+      }
     }
   }
 }

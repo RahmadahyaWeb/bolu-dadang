@@ -66,3 +66,19 @@ Timpa file dengan nama sama, lalu `npm run build`. Foto saat ini adalah ilustras
 - `npm run verify` memeriksa 10 halaman hasil build: satu `<h1>`, title/description/canonical/OG, JSON-LD, link internal, `wa.me/62`, aset, dan larangan `TODO`/`lorem`.
 - `npm test` menguji `cart.ts`, `order.ts`, `wa.ts`.
 - Screenshot QA (tidak di-commit) ada di `qa-screenshots/`.
+
+## Deploy ke GitHub Pages
+
+Situs di-deploy otomatis lewat `.github/workflows/deploy.yml` setiap push ke `main`.
+
+1. Buat repo GitHub (mis. `bolu-dadang`), lalu push:
+   ```bash
+   git remote add origin https://github.com/<username>/bolu-dadang.git
+   git push -u origin main
+   ```
+2. Di repo: **Settings → Pages → Source: GitHub Actions**.
+3. URL hasil: `https://<username>.github.io/<repo>/` (mis. `/bolu-dadang/`).
+
+`astro.config.mjs` membaca `GITHUB_REPOSITORY`/`GITHUB_REPOSITORY_OWNER` dari Actions untuk `site` dan `base`; tidak perlu edit manual. Semua link internal memakai helper `src/lib/path.ts`, jadi base otomatis ikut.
+
+Jika memakai custom domain: set `base: "/"`, `site` ke domain, dan tambahkan `public/CNAME`.

@@ -1,6 +1,7 @@
 ---
 // Panel keranjang global: bottom sheet < 768px, panel kanan di >= 768px.
 // Isi item dirender oleh src/scripts/site.ts dari localStorage.
+import { href } from "../lib/path";
 ---
 <div data-cart-drawer hidden class="fixed inset-0 z-[60]">
   <div data-cart-backdrop class="absolute inset-0 bg-cokelat/50"></div>
@@ -27,15 +28,15 @@
     <div class="flex-1 overflow-y-auto px-5 py-4" data-cart-drawer-items>
       <div class="py-10 text-center">
         <p class="text-lg font-medium">Keranjang Anda masih kosong.</p>
-        <a href="/katalog" class="btn btn-mentega mt-5">Lihat katalog</a>
+        <a href={href("/katalog")} class="btn btn-mentega mt-5">Lihat katalog</a>
       </div>
     </div>
 
     <div data-cart-drawer-foot hidden class="border-t border-cokelat/12 px-5 py-4">
       <p class="text-sm text-karamel" data-cart-drawer-total>Total dihitung via WhatsApp</p>
       <div class="mt-3 flex gap-3">
-        <a href="/keranjang" class="btn btn-ghost min-h-11 flex-1 px-3">Lihat keranjang</a>
-        <a href="/checkout" class="btn btn-pandan min-h-11 flex-1 px-3">Checkout</a>
+        <a href={href("/keranjang")} class="btn btn-ghost min-h-11 flex-1 px-3">Lihat keranjang</a>
+        <a href={href("/checkout")} class="btn btn-pandan min-h-11 flex-1 px-3">Checkout</a>
       </div>
     </div>
   </div>

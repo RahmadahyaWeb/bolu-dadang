@@ -4,6 +4,7 @@ import Breadcrumbs from "../components/Breadcrumbs.astro";
 import WaIcon from "../components/WaIcon.astro";
 import { business } from "../data/business";
 import { waLink } from "../lib/wa";
+import { href } from "../lib/path";
 
 const title = `Lokasi & Kontak — ${business.name}`;
 const description =
@@ -18,8 +19,8 @@ const localBusinessLd = {
   "@type": "LocalBusiness",
   name: business.name,
   description: business.description,
-  image: new URL("/og.jpg", Astro.site).href,
-  url: new URL("/lokasi", Astro.site).href,
+  image: new URL(href("/og.jpg"), Astro.site).href,
+  url: new URL(href("/lokasi"), Astro.site).href,
   ...(business.phone ? { telephone: `+${business.phone}` } : {}),
   address: {
     "@type": "PostalAddress",
@@ -83,7 +84,7 @@ const localBusinessLd = {
 
         <figure>
           <img
-            src="/map.jpg"
+            src={href("/map.jpg")}
             alt={`Peta lokasi ${business.name} di ${business.address.city}`}
             width="1200"
             height="800"

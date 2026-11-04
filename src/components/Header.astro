@@ -1,6 +1,7 @@
 ---
 import { business } from "../data/business";
 import { waLink } from "../lib/wa";
+import { href, stripBase } from "../lib/path";
 import WaIcon from "./WaIcon.astro";
 
 const nav = [
@@ -10,7 +11,7 @@ const nav = [
   { href: "/lokasi", label: "Lokasi" },
 ];
 
-const path = Astro.url.pathname;
+const path = stripBase(Astro.url.pathname);
 const isCurrent = (href: string) =>
   href === "/" ? path === "/" : path.startsWith(href);
 
@@ -20,14 +21,14 @@ const waGeneral = business.phone
 ---
 <header class="sticky top-0 z-40 border-b border-cokelat/12 bg-kertas/92 backdrop-blur-sm">
   <div class="mx-auto flex h-16 max-w-[1200px] items-center justify-between gap-3 px-5">
-    <a href="/" class="display inline-flex min-h-11 items-center text-xl font-semibold tracking-tight">
+    <a href={href("/")} class="display inline-flex min-h-11 items-center text-xl font-semibold tracking-tight">
       {business.shortName}
     </a>
 
     <nav aria-label="Navigasi utama" class="hidden items-center gap-8 text-sm font-medium md:flex">
       {nav.map((item) => (
         <a
-          href={item.href}
+          href={href(item.href)}
           aria-current={isCurrent(item.href) ? "page" : undefined}
           class:list={[
             "inline-flex min-h-11 min-w-11 items-center border-b-2 transition-colors hover:text-pandan",
@@ -89,7 +90,7 @@ const waGeneral = business.phone
     <nav aria-label="Navigasi seluler" class="mx-auto flex max-w-[1200px] flex-col px-5 py-3">
       {nav.map((item) => (
         <a
-          href={item.href}
+          href={href(item.href)}
           aria-current={isCurrent(item.href) ? "page" : undefined}
           class:list={[
             "inline-flex min-h-11 items-center border-b border-cokelat/10 py-1 text-lg",

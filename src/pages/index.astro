@@ -9,6 +9,7 @@ import WaIcon from "../components/WaIcon.astro";
 import { business } from "../data/business";
 import { products } from "../data/catalog";
 import { waLink } from "../lib/wa";
+import { href } from "../lib/path";
 import heroImg from "../assets/hero.jpg";
 import aboutImg from "../assets/about-texture.jpg";
 
@@ -21,8 +22,8 @@ const localBusinessLd = {
   "@type": "LocalBusiness",
   name: business.name,
   description: business.description,
-  image: new URL("/og.jpg", Astro.site).href,
-  url: new URL("/", Astro.site).href,
+  image: new URL(href("/og.jpg"), Astro.site).href,
+  url: new URL(href("/"), Astro.site).href,
   ...(business.phone ? { telephone: `+${business.phone}` } : {}),
   address: {
     "@type": "PostalAddress",
@@ -76,7 +77,7 @@ const valueProps = [
         {business.description}
       </p>
       <div class="rise rise-2 mt-8 flex flex-wrap items-start justify-start gap-3 md:items-center md:justify-center">
-        <a href="/katalog" class="btn btn-mentega">Lihat katalog</a>
+        <a href={href("/katalog")} class="btn btn-mentega">Lihat katalog</a>
         {waGeneral && (
           <a href={waGeneral} target="_blank" rel="noopener noreferrer" class="btn btn-ghost">
             <WaIcon class="h-4 w-4" />
@@ -106,7 +107,7 @@ const valueProps = [
             Empat varian, semuanya dipanggang harian di Banjarmasin.
           </p>
         </div>
-        <a href="/katalog" class="btn btn-ghost">Lihat katalog</a>
+        <a href={href("/katalog")} class="btn btn-ghost">Lihat katalog</a>
       </div>
 
       <div class="mt-8">
@@ -143,7 +144,7 @@ const valueProps = [
           Teksturnya lembut dengan rongga halus, dipotong tebal agar mudah disantap bersama teh
           atau kopi.
         </p>
-        <a href="/tentang" class="btn btn-ghost mt-7">Tentang Bolu Dadang</a>
+        <a href={href("/tentang")} class="btn btn-ghost mt-7">Tentang Bolu Dadang</a>
       </div>
     </div>
   </section>
@@ -210,7 +211,7 @@ const valueProps = [
                 <li>{h.days}, pukul {h.time}</li>
               ))}
             </ul>
-            <a href="/lokasi" class="btn btn-ghost-light mt-6">Lihat lokasi</a>
+            <a href={href("/lokasi")} class="btn btn-ghost-light mt-6">Lihat lokasi</a>
           </div>
         </div>
       </div>

@@ -1,9 +1,12 @@
 import { defineConfig } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 
-// TODO(owner): ganti dengan domain final sebelum deploy.
+const repo = process.env.GITHUB_REPOSITORY?.split("/")[1] ?? "bolu-dadang";
+const owner = process.env.GITHUB_REPOSITORY_OWNER ?? "USERNAME";
+
 export default defineConfig({
-  site: "https://boludadang.example.com",
+  site: `https://${owner}.github.io`,
+  base: `/${repo}`,
   vite: {
     plugins: [tailwindcss()],
   },

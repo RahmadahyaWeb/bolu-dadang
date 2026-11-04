@@ -12,6 +12,7 @@ import {
 } from "../lib/cart";
 import { buildOrderMessage } from "../lib/order";
 import { waLink } from "../lib/wa";
+import { href } from "../lib/path";
 
 interface ProdukClient {
   id: string;
@@ -71,11 +72,11 @@ function rowHtml(item: { productId: string; qty: number }): string {
   if (!p) return "";
   return `
     <li class="flex gap-4 border-b border-cokelat/12 py-4 last:border-b-0">
-      <a href="/produk/${p.slug}" class="shrink-0">
+      <a href="${href(`/produk/${p.slug}`)}" class="shrink-0">
         <img src="${p.image}" alt="" width="72" height="72" loading="lazy" class="h-[72px] w-[72px] rounded-md border border-cokelat/12 object-cover" />
       </a>
       <div class="flex flex-1 flex-col">
-        <a href="/produk/${p.slug}" class="font-semibold leading-snug hover:text-pandan">${p.name}</a>
+        <a href="${href(`/produk/${p.slug}`)}" class="font-semibold leading-snug hover:text-pandan">${p.name}</a>
         <p class="mt-0.5 text-sm text-karamel">${priceLabel(p)}</p>
         <div class="mt-2 flex items-center gap-3">
           <div class="inline-flex items-center rounded-full border border-cokelat/25">
@@ -93,7 +94,7 @@ function emptyHtml(): string {
   return `
     <div class="py-10 text-center">
       <p class="text-lg font-medium">Keranjang Anda masih kosong.</p>
-      <a href="/katalog" class="btn btn-mentega mt-5">Lihat katalog</a>
+      <a href="${href("/katalog")}" class="btn btn-mentega mt-5">Lihat katalog</a>
     </div>`;
 }
 
@@ -123,8 +124,8 @@ function renderPage(): void {
     <div class="mt-8 flex flex-col gap-6 border-t border-cokelat/12 pt-6 sm:flex-row sm:items-center sm:justify-between">
       <p class="text-lg font-semibold" data-cart-page-total>${totalLabel()}</p>
       <div class="flex flex-wrap gap-3">
-        <a href="/katalog" class="btn btn-ghost">Lihat katalog</a>
-        <a href="/checkout" class="btn btn-pandan">Lanjutkan ke konfirmasi</a>
+        <a href="${href("/katalog")}" class="btn btn-ghost">Lihat katalog</a>
+        <a href="${href("/checkout")}" class="btn btn-pandan">Lanjutkan ke konfirmasi</a>
       </div>
     </div>`;
 }
@@ -135,7 +136,7 @@ function renderSummary(): void {
   if (!state.items.length) {
     box.innerHTML = `
       <p class="font-medium">Keranjang Anda masih kosong.</p>
-      <a href="/katalog" class="btn btn-mentega mt-4">Lihat katalog</a>`;
+      <a href="${href("/katalog")}" class="btn btn-mentega mt-4">Lihat katalog</a>`;
     return;
   }
   box.innerHTML = `
@@ -174,7 +175,9 @@ function render(): void {
 }
 
 function focusKatalogLink(): void {
-  const link = document.querySelector<HTMLElement>("[data-checkout-summary] a[href='/katalog']");
+  const link = document.querySelector<HTMLElement>(
+    `[data-checkout-summary] a[href='${href("/katalog")}']`,
+  );
   link?.focus();
 }
 

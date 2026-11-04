@@ -3,6 +3,7 @@ import { Image } from "astro:assets";
 import type { Product } from "../data/catalog";
 import { business } from "../data/business";
 import { waLink } from "../lib/wa";
+import { href } from "../lib/path";
 
 interface Props {
   product: Product;
@@ -19,7 +20,7 @@ const waTanya = business.phone
   : "";
 ---
 <article class="group flex flex-col" data-kategori={product.category} data-nama={product.name}>
-  <a href={`/produk/${product.slug}`} class="block overflow-hidden rounded-md border border-cokelat/12">
+  <a href={href(`/produk/${product.slug}`)} class="block overflow-hidden rounded-md border border-cokelat/12">
     <Image
       src={product.images[0]}
       alt={product.alt}
@@ -32,7 +33,7 @@ const waTanya = business.phone
 
   <div class="mt-4 flex items-start justify-between gap-3">
     <Heading class="text-xl font-semibold leading-snug">
-      <a href={`/produk/${product.slug}`} class="transition-colors hover:text-pandan">{product.name}</a>
+      <a href={href(`/produk/${product.slug}`)} class="transition-colors hover:text-pandan">{product.name}</a>
     </Heading>
     {product.badge && <span class="badge shrink-0">{product.badge}</span>}
   </div>
