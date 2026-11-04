@@ -4,6 +4,7 @@ import Layout from "../layouts/Layout.astro";
 import FilterPills from "../components/FilterPills.astro";
 import ProductCard from "../components/ProductCard.astro";
 import TestimonialCarousel from "../components/TestimonialCarousel.astro";
+import Faq from "../components/Faq.astro";
 import WaIcon from "../components/WaIcon.astro";
 import { business } from "../data/business";
 import { products } from "../data/catalog";
@@ -36,6 +37,16 @@ const localBusinessLd = {
   openingHours: business.hours.map((h) => `${h.days} ${h.time}`),
 };
 
+const faqLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: business.faqs.map((f) => ({
+    "@type": "Question",
+    name: f.question,
+    acceptedAnswer: { "@type": "Answer", text: f.answer },
+  })),
+};
+
 const valueProps = [
   {
     title: "Dipanggang harian",
@@ -51,20 +62,20 @@ const valueProps = [
   },
 ];
 ---
-<Layout jsonLd={[localBusinessLd]}>
+<Layout jsonLd={[localBusinessLd, faqLd]}>
   <!-- Hero -->
   <section data-hero>
-    <div class="mx-auto max-w-[1200px] px-5 pb-16 pt-12 text-center md:pb-24 md:pt-16">
+    <div class="mx-auto max-w-[1200px] px-5 pb-16 pt-12 text-left md:pb-24 md:pt-16 md:text-center">
       <h1 class="rise display text-[clamp(3.2rem,9vw,6.5rem)] font-semibold leading-[1]">
         {business.name}
       </h1>
       <p class="rise display mt-4 text-[clamp(1.35rem,3.4vw,2.15rem)] font-normal leading-snug text-karamel">
         {business.tagline}
       </p>
-      <p class="rise rise-2 mx-auto mt-6 max-w-xl text-lg leading-relaxed text-cokelat/85">
+      <p class="rise rise-2 mt-6 max-w-xl text-lg leading-relaxed text-cokelat/85 md:mx-auto">
         {business.description}
       </p>
-      <div class="rise rise-2 mt-8 flex flex-wrap items-center justify-center gap-3">
+      <div class="rise rise-2 mt-8 flex flex-wrap items-start justify-start gap-3 md:items-center md:justify-center">
         <a href="/katalog" class="btn btn-mentega">Lihat katalog</a>
         {waGeneral && (
           <a href={waGeneral} target="_blank" rel="noopener noreferrer" class="btn btn-ghost">
@@ -158,6 +169,13 @@ const valueProps = [
   <section class="bg-susu py-16 md:py-24">
     <div class="mx-auto max-w-[1200px] px-5">
       <TestimonialCarousel />
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="py-16 md:py-24">
+    <div class="mx-auto max-w-[820px] px-5">
+      <Faq />
     </div>
   </section>
 
