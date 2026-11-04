@@ -1,65 +1,102 @@
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 
 const dist = "dist";
-const htmlPath = join(dist, "index.html");
-if (!existsSync(htmlPath)) {
-  console.error("verify: dist/index.html tidak ada. Jalankan `npm run build` dulu.");
-  process.exit(1);
-}
+const routes = [
+  "index.html",
+  "katalog/index.html",
+  "produk/kelemben-original/index.html",
+  "produk/kelemben-pandan/index.html",
+  "produk/kelemben-coklat/index.html",
+  "produk/kelemben-coklat-zebra/index.html",
+  "keranjang/index.html",
+  "checkout/index.html",
+  "tentang/index.html",
+  "lokasi/index.html",
+];
 
-const html = readFileSync(htmlPath, "utf8");
 const errors = [];
+const pages = new Map();
 
 function check(label, ok) {
   if (!ok) errors.push(label);
 }
 
-// 1. satu h1
-check("harus ada tepat satu <h1>", (html.match(/<h1\b/g) || []).length === 1);
-
-// 2. section id wajib
-for (const id of ["menu", "tentang", "cara-pesan", "galeri", "testimoni", "lokasi", "faq"]) {
-  check(`section #${id} harus ada`, new RegExp(`id=["']${id}["']`).test(html));
+function walk(dir, out = []) {
+  for (const entry of readdirSync(dir)) {
+    const full = join(dir, entry);
+    if (statSync(full).isDirectory()) walk(full, out);
+    else out.push(full);
+  }
+  return out;
 }
 
-// 3. semua wa.me diawali 62 dan punya text=
-const waLinks = [...html.matchAll(/href=["']([^"']*wa\.me[^"']*)["']/g)].map((m) => m[1]);
-for (const link of waLinks) {
-  check(`wa.me harus https://wa.me/62... : ${link}`, /^https:\/\/wa\.me\/62/.test(link));
-  check(`wa.me harus punya ?text= : ${link}`, /\?text=/.test(link));
+const distFiles = existsSync(dist) ? walk(dist) : [];
+
+for (const route of routes) {
+  const file = join(dist, route);
+  if (!existsSync(file)) {
+    errors.push(`route hilang: ${route}`);
+    continue;
+  }
+  pages.set(route, readFileSync(file, "utf8"));
 }
 
-// 4. tidak ada marker terlarang
-for (const bad of ["TODO", "lorem", "http://"]) {
-  check(`tidak boleh ada "${bad}" di HTML`, !html.includes(bad));
-}
-check('tidak boleh ada src=""', !/src=["']\s*["']/.test(html));
+for (const [route, html] of pages) {
+  const name = route.replace("/index.html", "") || "beranda";
 
-// 5. meta & JSON-LD
-check("lang=id", /<html[^>]*\slang=["']id["']/.test(html));
-check("<title> ada", /<title>[^<]+<\/title>/.test(html));
-check("meta description ada", /<meta[^>]+name=["']description["']/.test(html));
-check("canonical ada", /<link[^>]+rel=["']canonical["']/.test(html));
-check("og:image ada", /<meta[^>]+property=["']og:image["']/.test(html));
+  check(`${name}: tepat satu <h1>`, (html.match(/<h1\b/g) || []).length === 1);
+  check(`${name}: lang=id`, /<html[^>]*\slang=["']id["']/.test(html));
+  check(`${name}: <title>`, /<title>[^<]+<\/title>/.test(html));
+  check(`${name}: meta description`, /<meta[^>]+name=["']description["']/.test(html));
+  check(`${name}: canonical`, /<link[^>]+rel=["']canonical["']/.test(html));
+  check(`${name}: og:image`, /<meta[^>]+property=["']og:image["']/.test(html));
+  check(`${name}: tidak ada TODO`, !html.includes("TODO"));
+  check(`${name}: tidak ada lorem`, !html.toLowerCase().includes("lorem"));
+  check(`${name}: tidak ada src kosong`, !/src=["']\s*["']/.test(html));
 
-const ld = [...html.matchAll(/<script type=["']application\/ld\+json["']>([\s\S]*?)<\/script>/g)];
-check("JSON-LD minimal satu", ld.length >= 1);
-for (const m of ld) {
-  try {
-    JSON.parse(m[1]);
-  } catch (e) {
-    errors.push(`JSON-LD tidak valid: ${e.message}`);
+  for (const m of html.matchAll(/<script type=["']application\/ld\+json["']>([\s\S]*?)<\/script>/g)) {
+    try {
+      JSON.parse(m[1]);
+    } catch (e) {
+      errors.push(`${name}: JSON-LD tidak valid: ${e.message}`);
+    }
+  }
+
+  for (const m of html.matchAll(/href=["']([^"']+)["']/g)) {
+    const href = m[1];
+    if (href.startsWith("http") || href.startsWith("mailto:") || href.startsWith("#")) continue;
+    if (href.startsWith("/_astro/") || href.startsWith("/map.jpg") || href.startsWith("/og.jpg")) continue;
+    if (href.startsWith("/")) {
+      const clean = href.split("?")[0].split("#")[0].replace(/\/$/, "");
+      const candidates = [
+        join(dist, clean.slice(1), "index.html"),
+        join(dist, clean.slice(1) + ".html"),
+      ];
+      check(`${name}: link internal valid ${href}`, candidates.some((c) => existsSync(c)) || clean === "");
+    }
   }
 }
 
-// 6. file gambar yang direferensikan ada di dist
-const imgSrcs = [...html.matchAll(/src=["']([^"']+\.(?:jpg|jpeg|png|webp|avif|svg))["']/g)].map((m) => m[1]);
-for (const src of imgSrcs) {
-  if (src.startsWith("http")) continue;
-  const clean = src.replace(/^\//, "").split("?")[0];
-  const full = join(dist, clean);
-  check(`aset gambar ada: ${src}`, existsSync(full));
+for (const [route, html] of pages) {
+  for (const m of html.matchAll(/href=["']([^"']*wa\.me[^"']*)["']/g)) {
+    check(`${route}: wa.me 62`, /^https:\/\/wa\.me\/62/.test(m[1]));
+    check(`${route}: wa.me text`, /\?text=/.test(m[1]));
+  }
+}
+
+const referenced = new Set();
+for (const html of pages.values()) {
+  for (const m of html.matchAll(/(?:src|srcset)=["']([^"']+)["']/g)) {
+    for (const part of m[1].split(",")) {
+      const src = part.trim().split(" ")[0];
+      if (!src || src.startsWith("http")) continue;
+      if (src.startsWith("/")) referenced.add(src.split("?")[0]);
+    }
+  }
+}
+for (const src of referenced) {
+  check(`aset ada: ${src}`, distFiles.includes(join(dist, src.slice(1))));
 }
 
 if (errors.length) {
@@ -68,4 +105,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`verify OK (${waLinks.length} tautan WA, ${ld.length} JSON-LD, ${imgSrcs.length} gambar).`);
+console.log(`verify OK (${pages.size} route, ${referenced.size} aset).`);

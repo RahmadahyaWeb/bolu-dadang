@@ -1,12 +1,13 @@
 @import "tailwindcss";
 
 @theme {
-  --color-kertas: #fbecc8;
-  --color-cokelat: #2a1608;
+  --color-kertas: #fbebc8;
+  --color-susu: #fff6e2;
+  --color-cokelat: #2e1b0f;
   --color-mentega: #f2b93b;
   --color-pandan: #2f5d3b;
   --color-karamel: #8a4b1c;
-  --color-susu: #fff6e2;
+  --color-galat: #a3311e;
 
   --font-display: "Fraunces Variable", ui-serif, Georgia, serif;
   --font-body: "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, sans-serif;
@@ -55,6 +56,17 @@
   summary::-webkit-details-marker {
     display: none;
   }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 }
 
 /* the one bold device: 45° zebra stripes from the Coklat Zebra kelemben */
@@ -73,21 +85,13 @@
   width: 100%;
 }
 
-/* dotted leader on the menu board rows */
-.leader {
-  flex: 1 1 2rem;
-  min-width: 2rem;
-  align-self: baseline;
-  border-bottom: 3px dotted color-mix(in srgb, var(--color-karamel) 55%, transparent);
-}
-
 @layer components {
   .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.6rem;
-    min-height: 3rem;
+    min-height: 2.75rem;
     padding: 0.75rem 1.75rem;
     border-radius: 9999px;
     font-weight: 600;
@@ -108,7 +112,6 @@
   .btn-mentega {
     background-color: var(--color-mentega);
     color: var(--color-cokelat);
-    box-shadow: 0 14px 28px -16px rgba(42, 22, 8, 0.55);
   }
 
   .btn-mentega:hover {
@@ -119,7 +122,6 @@
   .btn-pandan {
     background-color: var(--color-pandan);
     color: var(--color-susu);
-    box-shadow: 0 14px 28px -16px rgba(42, 22, 8, 0.45);
   }
 
   .btn-pandan:hover {
@@ -146,6 +148,89 @@
     border-color: var(--color-mentega);
     color: var(--color-mentega);
   }
+
+  /* small honest labels: "Contoh", "Favorit" */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    border: 1px solid color-mix(in srgb, var(--color-cokelat) 18%, transparent);
+    background-color: color-mix(in srgb, var(--color-mentega) 32%, transparent);
+    padding: 0.15rem 0.7rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.6;
+    color: var(--color-cokelat);
+  }
+
+  /* filter pills */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.75rem;
+    padding: 0.45rem 1.35rem;
+    border-radius: 9999px;
+    border: 1px solid color-mix(in srgb, var(--color-cokelat) 22%, transparent);
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+  .pill:hover {
+    border-color: var(--color-pandan);
+    color: var(--color-pandan);
+  }
+
+  .pill.is-active {
+    background-color: var(--color-cokelat);
+    border-color: var(--color-cokelat);
+    color: var(--color-kertas);
+  }
+
+  /* form fields */
+  .label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .field {
+    width: 100%;
+    min-height: 2.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid color-mix(in srgb, var(--color-cokelat) 25%, transparent);
+    background-color: color-mix(in srgb, var(--color-susu) 75%, transparent);
+    padding: 0.7rem 1rem;
+    color: var(--color-cokelat);
+  }
+
+  .field::placeholder {
+    color: color-mix(in srgb, var(--color-karamel) 75%, transparent);
+  }
+
+  .field[aria-invalid="true"] {
+    border-color: var(--color-galat);
+  }
+
+  .error-text {
+    margin-top: 0.35rem;
+    font-size: 0.85rem;
+    color: var(--color-galat);
+  }
+}
+
+/* carousel: no visible scrollbar */
+.hide-scrollbar {
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 /* floating WA: hidden until JS reveals it past the hero.
@@ -171,10 +256,21 @@
     animation: rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
-  .rise-1 { animation-delay: 0.05s; }
-  .rise-2 { animation-delay: 0.15s; }
-  .rise-3 { animation-delay: 0.25s; }
-  .rise-4 { animation-delay: 0.35s; }
+  .rise-1 {
+    animation-delay: 0.05s;
+  }
+
+  .rise-2 {
+    animation-delay: 0.15s;
+  }
+
+  .rise-3 {
+    animation-delay: 0.25s;
+  }
+
+  .rise-4 {
+    animation-delay: 0.35s;
+  }
 
   @keyframes rise {
     from {
@@ -184,6 +280,38 @@
     to {
       opacity: 1;
       transform: translateY(0);
+    }
+  }
+
+  .cart-panel {
+    animation: sheet-up 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes sheet-up {
+    from {
+      transform: translateY(28px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @media (min-width: 640px) {
+    .cart-panel {
+      animation-name: panel-right;
+    }
+
+    @keyframes panel-right {
+      from {
+        transform: translateX(32px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
     }
   }
 }

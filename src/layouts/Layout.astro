@@ -3,57 +3,54 @@ import "@fontsource-variable/fraunces/full.css";
 import "@fontsource-variable/plus-jakarta-sans";
 import "../styles/global.css";
 
+import { getImage } from "astro:assets";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import FloatingWa from "../components/FloatingWa.astro";
+import CartDrawer from "../components/CartDrawer.astro";
 import { business } from "../data/business";
+import { products } from "../data/catalog";
 
 interface Props {
   title?: string;
   description?: string;
+  /** Objek schema.org yang dirender sebagai JSON-LD halaman ini. */
+  jsonLd?: object[];
+  /** Tombol WA mengambang (dimatikan di halaman form agar tidak menutupi CTA). */
+  floatingWa?: boolean;
 }
 
 const {
   title = `${business.name} — Kelemben Khas Banjarmasin`,
   description = business.description,
+  jsonLd = [],
+  floatingWa = true,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL("/og.jpg", Astro.site);
-const hasAddress = Boolean(business.address.street);
 
-const localBusinessLd = {
-  "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  name: business.name,
-  description,
-  image: ogImage.href,
-  url: canonical.href,
-  ...(business.phone ? { telephone: `+${business.phone}` } : {}),
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: [business.address.street, business.address.district]
-      .filter(Boolean)
-      .join(", "),
-    addressLocality: business.address.city,
-    addressRegion: business.address.province,
-    ...(business.address.postalCode
-      ? { postalCode: business.address.postalCode }
-      : {}),
-    addressCountry: "ID",
-  },
-  openingHours: business.hours.map((h) => `${h.days} ${h.time}`),
-};
+// Metadata produk untuk keranjang (client): sumber tunggal dari catalog.ts.
+const produkClient = await Promise.all(
+  products.map(async (p) => {
+    const img = await getImage({
+      src: p.images[0],
+      width: 160,
+      height: 160,
+      fit: "cover",
+      format: "webp",
+    });
+    return {
+      id: p.id,
+      slug: p.slug,
+      name: p.name,
+      priceFrom: p.priceFrom,
+      image: img.src,
+    };
+  }),
+);
 
-const faqLd = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: business.faqs.map((f) => ({
-    "@type": "Question",
-    name: f.question,
-    acceptedAnswer: { "@type": "Answer", text: f.answer },
-  })),
-};
+const clientData = { phone: business.phone, produk: produkClient };
 ---
 <!doctype html>
 <html lang="id">
@@ -74,8 +71,9 @@ const faqLd = {
     <meta property="og:image:height" content="630" />
     <meta property="og:locale" content="id_ID" />
     <meta name="twitter:card" content="summary_large_image" />
-    {hasAddress && <script type="application/ld+json" set:html={JSON.stringify(localBusinessLd)} />}
-    <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />
+    {jsonLd.map((ld) => (
+      <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+    ))}
     <noscript>
       <style>
         html [data-fab] {
@@ -96,20 +94,12 @@ const faqLd = {
       <slot />
     </main>
     <Footer />
-    <FloatingWa />
-    <script is:inline>
-      (function () {
-        var fab = document.querySelector("[data-fab]");
-        var hero = document.querySelector("[data-hero]");
-        if (fab && hero && "IntersectionObserver" in window) {
-          var io = new IntersectionObserver(function (entries) {
-            fab.classList.toggle("is-visible", !entries[0].isIntersecting);
-          });
-          io.observe(hero);
-        } else if (fab) {
-          fab.classList.add("is-visible");
-        }
-      })();
+    <CartDrawer />
+    {floatingWa && <FloatingWa />}
+    <p class="sr-only" aria-live="polite" aria-atomic="true" data-cart-live></p>
+    <script type="application/json" id="data-toko" set:html={JSON.stringify(clientData)} />
+    <script>
+      import "../scripts/site";
     </script>
   </body>
 </html>
