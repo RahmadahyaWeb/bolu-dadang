@@ -69,22 +69,6 @@
   }
 }
 
-/* the one bold device: 45° zebra stripes from the Coklat Zebra kelemben */
-.stripe {
-  background-image: repeating-linear-gradient(
-    -45deg,
-    var(--color-cokelat) 0 16px,
-    var(--color-mentega) 16px 24px,
-    var(--color-cokelat) 24px 30px,
-    var(--color-mentega) 30px 44px
-  );
-}
-
-.stripe-divider {
-  height: 12px;
-  width: 100%;
-}
-
 @layer components {
   .btn {
     display: inline-flex;
